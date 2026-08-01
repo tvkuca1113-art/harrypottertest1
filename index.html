@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="de" data-modus="nox">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Willkommen in der Welt der Magie – Eine Fanseite</title>
+<meta name="description" content="Eine magische Fanseite für junge Zauberinnen und Zauberer: Häuser, Zaubersprüche, Spiele, Quiz und der Sprechende Hut.">
+
+<!-- Google Fonts: Cinzel für Überschriften, Lato für Fließtext -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* =====================================================================
+   INHALTSVERZEICHNIS DER STYLES
+   1. Farben und Grundeinstellungen
+   2. Grundgerüst (Reset, Typografie, Hilfsklassen)
+   3. Sternenhimmel und Hintergrund
+   4. Kopfzeile, Navigation, Burger-Menü
+   5. Punkteanzeige (Hauspokal)
+   6. Startseite (Hero) mit Kerzen und Schnatz
+   7. Die vier Häuser (3D-Karten)
+   8. Zaubersprüche (Zauberbuch)
+   9. Spiele und Quiz (Platzhalter-Kacheln)
+   10. Sprechender Hut (Test)
+   11. Wissenskarten
+   12. Fußzeile
+   13. Overlays: Hauswahl, Abzeichen, Konfetti
+   14. Responsiv (Handy, Tablet, Laptop)
+   15. Bewegung reduzieren (Barrierefreiheit)
+   ===================================================================== */
+
+/* --- 1. Farben und Grundeinstellungen ------------------------------- */
+:root{
+  /* Grundfarben der Seite */
+  --nacht:        #0d1330;   /* Tiefes Nachtblau */
+  --nacht-2:      #141c46;   /* Etwas helleres Nachtblau */
+  --nacht-3:      #1d2860;   /* Für Ränder und Karten */
+  --pergament:    #f2e8d5;   /* Altes Papier */
+  --pergament-2:  #e6d8ba;   /* Schatten auf dem Papier */
+  --gold:         #c9a227;   /* Gold für Verzierungen */
+  --gold-hell:    #f0d275;   /* Helles Gold für Glanz */
+  --akzent:       #f0d275;   /* Goldton für Texte und Symbole */
+  --tinte:        #2a2214;   /* Schrift auf Pergament */
+
+  /* Die vier Hausfarben */
+  --gryffindor-1: #7f0909;  --gryffindor-2: #d3a625;
+  --hufflepuff-1: #eeb939;  --hufflepuff-2: #372e29;
+  --ravenclaw-1:  #0e1a40;  --ravenclaw-2:  #946b2d;
+  --slytherin-1:  #1a472a;  --slytherin-2:  #aaaaaa;
+
+  /* Textfarben je nach Modus */
+  --text:         #f2e8d5;
+  --text-leise:   #bcc3e0;
+  --flaeche:      rgba(20, 28, 70, .72);
+  --rand:         rgba(201, 162, 39, .35);
+  --schatten:     0 10px 30px rgba(0,0,0,.45);
+
+  /* Abstände und Rundungen */
+  --radius:       18px;
+  --radius-klein: 10px;
+  --kopf-hoehe:   64px;
+}
+
+/* Lumos = Heller Modus. Die Bibliothek bei Tageslicht. */
+html[data-modus="lumos"]{
+  --nacht:        #efe4cd;
+  --nacht-2:      #f7efdf;
+  --nacht-3:      #e0cfa8;
+  --text:         #2a2214;
+  --text-leise:   #5d5138;
+  --flaeche:      rgba(255, 252, 245, .86);
+  --rand:         rgba(150, 116, 20, .45);
+  --gold:         #9a7a12;
+  --gold-hell:    #c9a227;
+  --akzent:       #7d5f0e;   /* dunkleres Gold: guter Kontrast auf hellem Grund */
+  --schatten:     0 10px 28px rgba(90, 70, 20, .18);
+}
+
+/* --- 2. Grundgerüst ------------------------------------------------- */
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{ scroll-behavior:smooth; scroll-padding-top:calc(var(--kopf-hoehe) + 12px); }
+
+body{
+  margin:0;
+  font-family:'Lato', system-ui, sans-serif;
+  font-size:clamp(1rem, .95rem + .3vw, 1.12rem);
+  line-height:1.65;
+  color:var(--text);
+  background:var(--nacht);
+  overflow-x:hidden;
+  transition:background .5s ease, color .5s ease;
+}
+
+h1,h2,h3,h4{ font-family:'Cinzel', Georgia, serif; line-height:1.2; margin:0 0 .5em; letter-spacing:.02em; }
+h2{ font-size:clamp(1.7rem, 1.2rem + 2vw, 2.7rem); }
+h3{ font-size:clamp(1.15rem, 1rem + .7vw, 1.5rem); }
+p{ margin:0 0 1em; }
+
+a{ color:var(--akzent); }
+
+img,svg{ max-width:100%; }
+
+/* Sichtbarer Fokus für die Tastaturbedienung */
+:focus-visible{
+  outline:3px solid var(--akzent);
+  outline-offset:3px;
+  border-radius:6px;
+}
+
+/* Link, der zuerst mit Tab erreicht wird */
+.skip-link{
+  position:absolute; left:8px; top:-60px; z-index:2000;
+  background:var(--gold); color:#1a1405; font-weight:700;
+  padding:10px 16px; border-radius:0 0 10px 10px; text-decoration:none;
+  transition:top .2s ease;
+}
+.skip-link:focus{ top:0; }
+
+/* Nur für Screenreader sichtbar */
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+
+/* Ein zentrierter Inhaltsbereich */
+.behaelter{ width:min(1180px, 92vw); margin-inline:auto; }
+
+section{ padding:clamp(56px, 8vw, 104px) 0; position:relative; }
+
+/* Überschrift eines Abschnitts mit goldener Linie */
+.abschnitt-kopf{ text-align:center; margin-bottom:clamp(28px,4vw,48px); }
+.abschnitt-kopf h2{ color:var(--akzent); text-shadow:0 2px 14px rgba(201,162,39,.25); }
+.abschnitt-kopf p{ color:var(--text-leise); max-width:62ch; margin-inline:auto; }
+.zierlinie{
+  width:min(280px, 70%); height:18px; margin:6px auto 18px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.zierlinie::before,.zierlinie::after{
+  content:""; height:1px; flex:1;
+  background:linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.zierlinie span{ color:var(--gold); font-size:14px; }
+
+/* Pergament-Fläche für Textblöcke */
+.pergament{
+  background:
+    radial-gradient(120% 90% at 12% 8%, #fbf4e4 0%, var(--pergament) 45%, var(--pergament-2) 100%);
+  color:var(--tinte);
+  border:1px solid rgba(120,92,20,.35);
+  border-radius:var(--radius);
+  box-shadow:var(--schatten), inset 0 0 40px rgba(150,120,50,.15);
+  position:relative;
+}
+/* Kleine goldene Ecken auf dem Pergament */
+.pergament::before{
+  content:""; position:absolute; inset:7px; border:1px solid rgba(160,125,30,.28);
+  border-radius:calc(var(--radius) - 6px); pointer-events:none;
+}
+
+/* Allgemeiner Knopf im Zauberer-Stil */
+.knopf{
+  --kf: var(--gold);
+  display:inline-flex; align-items:center; justify-content:center; gap:.55em;
+  font-family:'Cinzel', serif; font-weight:700; font-size:1rem;
+  padding:.78em 1.5em; border-radius:999px; cursor:pointer;
+  color:#1c1503; text-decoration:none;
+  background:linear-gradient(180deg, var(--gold-hell), var(--kf));
+  border:1px solid rgba(255,235,170,.6);
+  box-shadow:0 6px 18px rgba(201,162,39,.28), inset 0 1px 0 rgba(255,255,255,.55);
+  transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.knopf:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(201,162,39,.42); filter:brightness(1.06); }
+.knopf:active{ transform:translateY(0); }
+.knopf--geist{
+  background:transparent; color:var(--akzent);
+  border:1px solid var(--rand); box-shadow:none;
+}
+.knopf--geist:hover{ background:rgba(201,162,39,.12); }
+.knopf[disabled]{ opacity:.45; cursor:not-allowed; transform:none; }
+
+/* --- 3. Sternenhimmel und Hintergrund ------------------------------- */
+#sternen-canvas{
+  position:fixed; inset:0; width:100%; height:100%;
+  z-index:-2; pointer-events:none;
+  transition:opacity .6s ease;
+}
+html[data-modus="lumos"] #sternen-canvas{ opacity:.18; }
+
+/* Sanfter Farbverlauf über dem ganzen Hintergrund */
+.hintergrund-schleier{
+  position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(70% 50% at 50% 0%, rgba(60,80,190,.22), transparent 70%),
+    radial-gradient(50% 40% at 90% 80%, rgba(140,90,200,.14), transparent 70%),
+    linear-gradient(180deg, transparent 0%, rgba(5,8,25,.55) 100%);
+}
+html[data-modus="lumos"] .hintergrund-schleier{
+  background:
+    radial-gradient(70% 50% at 50% 0%, rgba(255,220,150,.35), transparent 70%),
+    linear-gradient(180deg, transparent, rgba(200,170,110,.25));
+}
+
+/* --- 4. Kopfzeile und Navigation ------------------------------------ */
+.kopfzeile{
+  position:fixed; top:0; left:0; right:0; z-index:900;
+  height:var(--kopf-hoehe);
+  background:linear-gradient(180deg, rgba(9,13,36,.96), rgba(9,13,36,.80));
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rand);
+}
+html[data-modus="lumos"] .kopfzeile{
+  background:linear-gradient(180deg, rgba(250,244,230,.97), rgba(250,244,230,.85));
+}
+.kopf-inner{
+  height:100%; display:flex; align-items:center; gap:12px;
+  width:min(1180px, 94vw); margin-inline:auto;
+}
+.logo{
+  display:flex; align-items:center; gap:9px; text-decoration:none;
+  font-family:'Cinzel', serif; font-weight:900; color:var(--akzent);
+  font-size:1rem; white-space:nowrap; letter-spacing:.06em;
+}
+.logo svg{ width:26px; height:26px; flex:none; }
+
+.haupt-nav{ margin-left:auto; }
+.haupt-nav ul{ display:flex; gap:2px; list-style:none; margin:0; padding:0; }
+.haupt-nav a{
+  display:block; padding:9px 12px; border-radius:10px;
+  color:var(--text); text-decoration:none; font-size:.92rem; font-weight:700;
+  transition:background .2s ease, color .2s ease;
+}
+.haupt-nav a:hover, .haupt-nav a[aria-current="true"]{
+  background:rgba(201,162,39,.16); color:var(--akzent);
+}
+
+.kopf-werkzeuge{ display:flex; align-items:center; gap:8px; margin-left:8px; }
+
+/* Runde Knöpfe für Ton und Lumos/Nox */
+.icon-knopf{
+  width:40px; height:40px; flex:none; display:grid; place-items:center;
+  border-radius:50%; cursor:pointer; font-size:1.05rem;
+  background:rgba(201,162,39,.12); border:1px solid var(--rand); color:var(--akzent);
+  transition:background .2s ease, transform .2s ease;
+}
+.icon-knopf:hover{ background:rgba(201,162,39,.28); transform:scale(1.06); }
+
+/* Burger-Menü (nur auf dem Handy sichtbar) */
+.burger{
+  display:none; width:42px; height:42px; flex:none;
+  background:transparent; border:1px solid var(--rand); border-radius:10px;
+  cursor:pointer; padding:0; position:relative;
+}
+.burger span{
+  position:absolute; left:10px; right:10px; height:2px; background:var(--akzent);
+  border-radius:2px; transition:transform .28s ease, opacity .2s ease;
+}
+.burger span:nth-child(1){ top:13px; }
+.burger span:nth-child(2){ top:20px; }
+.burger span:nth-child(3){ top:27px; }
+.burger[aria-expanded="true"] span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2){ opacity:0; }
+.burger[aria-expanded="true"] span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+/* --- 5. Punkteanzeige (Hauspokal) ----------------------------------- */
+.punkte-anzeige{
+  display:flex; align-items:center; gap:8px;
+  padding:5px 12px 5px 6px; border-radius:999px;
+  background:rgba(201,162,39,.12); border:1px solid var(--rand);
+  font-family:'Cinzel', serif; font-weight:700; font-size:.92rem;
+  color:var(--akzent); cursor:pointer; white-space:nowrap;
+}
+.punkte-anzeige .wappen-punkt{
+  width:26px; height:26px; border-radius:50%; flex:none;
+  display:grid; place-items:center; font-size:14px;
+  background:linear-gradient(145deg, var(--haus-1, #8a6a12), var(--haus-2, #d9b445));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.25);
+}
+.punkte-anzeige.puls{ animation:punkte-puls .6s ease; }
+@keyframes punkte-puls{
+  0%{ transform:scale(1); }
+  40%{ transform:scale(1.16); box-shadow:0 0 0 8px rgba(201,162,39,.18); }
+  100%{ transform:scale(1); }
+}
+/* Kleine Flugpunkte "+10" */
+.punkte-floater{
+  position:fixed; z-index:1500; pointer-events:none;
+  font-family:'Cinzel', serif; font-weight:900; font-size:1.2rem;
+  color:var(--akzent); text-shadow:0 0 12px rgba(240,210,117,.8);
+  animation:floater 1.2s ease-out forwards;
+}
+@keyframes floater{
+  0%{ opacity:0; transform:translateY(0) scale(.6); }
+  20%{ opacity:1; transform:translateY(-10px) scale(1.1); }
+  100%{ opacity:0; transform:translateY(-70px) scale(1); }
+}
+
+/* --- 6. Startseite (Hero) ------------------------------------------- */
+.hero{
+  min-height:100svh; display:grid; place-items:center;
+  text-align:center; padding-top:calc(var(--kopf-hoehe) + 20px);
+  overflow:hidden;
+}
+.hero-inhalt{ position:relative; z-index:3; }
+.hero-krone{
+  font-family:'Cormorant Garamond', serif; font-style:italic;
+  color:var(--gold); letter-spacing:.3em; text-transform:uppercase;
+  font-size:.82rem; margin-bottom:10px;
+}
+.hero h1{
+  font-size:clamp(2.1rem, 1.2rem + 5.2vw, 4.6rem);
+  color:var(--pergament);
+  text-shadow:0 0 26px rgba(201,162,39,.45), 0 3px 0 rgba(0,0,0,.25);
+  margin-bottom:.35em;
+}
+html[data-modus="lumos"] .hero h1{ color:#3a2e10; text-shadow:0 0 22px rgba(201,162,39,.35); }
+.hero h1 .funkel{
+  background:linear-gradient(100deg, var(--gold) 10%, #fff6cf 45%, var(--gold) 80%);
+  background-size:220% 100%;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:schimmer 5s linear infinite;
+}
+@keyframes schimmer{ to{ background-position:220% 0; } }
+.hero-text{
+  max-width:56ch; margin:0 auto 30px; color:var(--text-leise);
+  font-family:'Cormorant Garamond', serif; font-size:1.22rem;
+}
+.hero-knoepfe{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
+/* Schwebende Kerzen */
+.kerzen{ position:absolute; inset:0; pointer-events:none; z-index:1; }
+.kerze{ position:absolute; width:26px; animation:schweben 7s ease-in-out infinite; }
+.kerze .flamme{ transform-origin:50% 100%; animation:flackern 1.6s ease-in-out infinite; }
+@keyframes schweben{
+  0%,100%{ transform:translateY(0) rotate(-1deg); }
+  50%{ transform:translateY(-22px) rotate(1.5deg); }
+}
+@keyframes flackern{
+  0%,100%{ transform:scale(1) translateY(0); opacity:.95; }
+  50%{ transform:scale(1.14, .9) translateY(1px); opacity:1; }
+}
+
+/* Der goldene Schnatz fliegt über den Bildschirm */
+#schnatz{
+  position:fixed; z-index:600; width:52px; height:32px;
+  pointer-events:auto; cursor:pointer; border:0; background:transparent; padding:0;
+  filter:drop-shadow(0 0 10px rgba(240,210,117,.75));
+  transition:transform .12s ease;
+}
+#schnatz:hover{ transform:scale(1.15); }
+#schnatz .fluegel-l{ transform-origin:74% 50%; animation:fluegel .16s ease-in-out infinite alternate; }
+#schnatz .fluegel-r{ transform-origin:26% 50%; animation:fluegel .16s ease-in-out infinite alternate-reverse; }
+@keyframes fluegel{ from{ transform:scaleY(1); } to{ transform:scaleY(.28); } }
+
+/* Pfeil nach unten */
+.scroll-pfeil{
+  position:absolute; bottom:26px; left:50%; transform:translateX(-50%);
+  color:var(--gold); font-size:1.5rem; animation:huepf 2s ease-in-out infinite; z-index:3;
+}
+@keyframes huepf{ 0%,100%{ transform:translate(-50%,0); } 50%{ transform:translate(-50%,10px); } }
+
+/* --- 7. Die vier Häuser --------------------------------------------- */
+.haus-raster{
+  display:grid; gap:22px;
+  grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+}
+.haus-karte{
+  perspective:1400px; background:none; border:0; padding:0; display:block;
+  height:452px; cursor:pointer; width:100%; font-family:inherit;
+}
+.karte-innen{
+  position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .75s cubic-bezier(.4,.2,.2,1);
+}
+/* Umdrehen bei Hover, Tastaturfokus oder Klick (Klasse .gedreht) */
+.haus-karte:hover .karte-innen,
+.haus-karte:focus-within .karte-innen,
+.haus-karte.gedreht .karte-innen{ transform:rotateY(180deg); }
+/* Die verdeckte Rückseite bekommt keinen Tastaturfokus, solange sie hinten liegt */
+.karte-hinten{ visibility:hidden; }
+.haus-karte:hover .karte-hinten,
+.haus-karte:focus-within .karte-hinten,
+.haus-karte.gedreht .karte-hinten{ visibility:visible; }
+
+.karte-seite{
+  position:absolute; inset:0; backface-visibility:hidden;
+  border-radius:var(--radius); overflow:hidden;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:20px; text-align:center;
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:var(--schatten);
+}
+.karte-vorne{
+  background:linear-gradient(160deg, var(--hd) 0%, #0b0f24 130%);
+  color:#fff;
+}
+.karte-vorne::after{ /* leichter Goldschimmer */
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(60% 40% at 50% 0%, rgba(255,255,255,.18), transparent 70%);
+  pointer-events:none;
+}
+.karte-vorne .wappen{ width:130px; height:150px; margin-bottom:10px; }
+.karte-vorne h3{ color:#fff; margin:0; letter-spacing:.05em; text-shadow:0 2px 8px rgba(0,0,0,.5); }
+.karte-vorne .tier{ font-size:.86rem; color:rgba(255,255,255,.82); font-family:'Cormorant Garamond',serif; font-style:italic; }
+.karte-hinweis{
+  position:absolute; bottom:12px; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:rgba(255,255,255,.65);
+}
+
+.karte-hinten{
+  transform:rotateY(180deg);
+  background:radial-gradient(120% 90% at 20% 0%, #fbf4e4, var(--pergament) 55%, var(--pergament-2));
+  color:var(--tinte); justify-content:flex-start; text-align:left;
+  border:1px solid rgba(120,92,20,.4);
+  padding:16px 15px; overflow-y:auto; overscroll-behavior:contain;
+}
+.karte-hinten h3{ color:var(--hd); margin-bottom:4px; font-size:1.15rem; }
+.karte-hinten p{ font-size:.83rem; line-height:1.5; margin-bottom:.6em; }
+.eigenschaften{ display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.eigenschaft{
+  font-size:.7rem; font-weight:700; padding:3px 8px; border-radius:999px;
+  background:var(--hd); color:#fff;
+}
+.karte-hinten .liste-titel{ font-family:'Cinzel',serif; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:#6b5620; margin-bottom:3px; }
+.karte-hinten .mitglieder{ font-size:.82rem; margin:0 0 8px; }
+.haus-waehlen{
+  margin-top:auto; align-self:stretch; font-size:.8rem; padding:.5em 1em; flex:none;
+}
+
+/* --- 8. Zaubersprüche ----------------------------------------------- */
+.zauber-werkzeuge{
+  display:flex; flex-direction:column; gap:14px; margin-bottom:26px;
+}
+.suchfeld-wrap{ position:relative; max-width:520px; width:100%; margin-inline:auto; }
+.suchfeld-wrap .lupe{ position:absolute; left:16px; top:50%; transform:translateY(-50%); opacity:.6; }
+#zauber-suche{
+  width:100%; padding:.85em 1em .85em 2.9em; font-size:1rem; font-family:inherit;
+  border-radius:999px; border:1px solid var(--rand);
+  background:var(--flaeche); color:var(--text);
+}
+#zauber-suche::placeholder{ color:var(--text-leise); opacity:.8; }
+
+.filter-knoepfe{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+.filter-knopf{
+  font-family:'Lato',sans-serif; font-size:.85rem; font-weight:700; cursor:pointer;
+  padding:.45em 1em; border-radius:999px; color:var(--text-leise);
+  background:transparent; border:1px solid var(--rand);
+  transition:all .2s ease;
+}
+.filter-knopf:hover{ color:var(--akzent); background:rgba(201,162,39,.12); }
+.filter-knopf[aria-pressed="true"]{
+  background:linear-gradient(180deg,var(--gold-hell),var(--gold)); color:#1c1503;
+  border-color:transparent;
+}
+
+.zauber-raster{
+  display:grid; gap:12px;
+  grid-template-columns:repeat(auto-fill, minmax(215px, 1fr));
+}
+.zauber-karte{
+  text-align:left; cursor:pointer; font-family:inherit;
+  padding:14px 16px; border-radius:var(--radius-klein);
+  background:var(--flaeche); border:1px solid var(--rand); color:var(--text);
+  transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.zauber-karte:hover{
+  transform:translateY(-3px); border-color:var(--akzent);
+  box-shadow:0 8px 22px rgba(201,162,39,.22);
+}
+.zauber-karte.aktiv{ border-color:var(--akzent); background:rgba(201,162,39,.16); }
+.zauber-karte .zn{ font-family:'Cinzel',serif; font-weight:700; font-size:1rem; color:var(--akzent); display:block; }
+.zauber-karte .zk{ font-size:.76rem; color:var(--text-leise); letter-spacing:.06em; text-transform:uppercase; }
+.sterne{ color:var(--gold); font-size:.8rem; letter-spacing:2px; }
+.sterne .leer{ opacity:.25; }
+.keine-treffer{ text-align:center; color:var(--text-leise); padding:30px; grid-column:1/-1; }
+
+/* Die Zauberbühne mit Zauberstab */
+.zauber-buehne{
+  margin:0 auto 26px; max-width:840px; padding:26px 22px; min-height:270px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+}
+.zauber-buehne .buehne-name{
+  font-family:'Cinzel',serif; font-weight:900;
+  font-size:clamp(1.5rem, 1rem + 3vw, 2.6rem);
+  color:#5b4a12; margin:6px 0 2px; min-height:1.2em;
+}
+.zauber-buehne .buehne-meta{ font-size:.8rem; letter-spacing:.14em; text-transform:uppercase; color:#8a7331; }
+.zauber-buehne .buehne-wirkung{
+  font-family:'Cormorant Garamond', serif; font-size:1.22rem; color:var(--tinte);
+  max-width:52ch; min-height:3.2em; margin-top:10px;
+}
+.zauber-buehne .cursor{ animation:blinken 1s steps(1) infinite; color:#8a7331; }
+@keyframes blinken{ 50%{ opacity:0; } }
+
+.zauberstab-buehne{ position:relative; width:230px; height:80px; }
+#zauberstab{ width:100%; height:100%; transform-origin:14% 60%; }
+#zauberstab.zuck{ animation:zucken .55s cubic-bezier(.36,.07,.19,.97); }
+@keyframes zucken{
+  0%{ transform:rotate(0deg) translateX(0); }
+  18%{ transform:rotate(-16deg) translateX(-6px); }
+  42%{ transform:rotate(13deg) translateX(4px); }
+  65%{ transform:rotate(-7deg); }
+  100%{ transform:rotate(0deg); }
+}
+#funken-canvas{ position:absolute; inset:-40px -30px; width:290px; height:160px; pointer-events:none; }
+
+/* --- 9. Spiele- und Quiz-Kacheln (Platzhalter) ---------------------- */
+.kachel-raster{
+  display:grid; gap:18px;
+  grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+}
+.kachel{
+  position:relative; padding:24px 20px 20px; border-radius:var(--radius);
+  background:var(--flaeche); border:1px dashed var(--rand);
+  display:flex; flex-direction:column; align-items:flex-start; gap:6px;
+  min-height:190px; overflow:hidden;
+  transition:transform .2s ease, border-color .2s ease;
+}
+.kachel:hover{ transform:translateY(-4px); border-color:var(--akzent); }
+.kachel .kachel-icon{
+  font-size:2rem; width:56px; height:56px; border-radius:16px; display:grid; place-items:center;
+  background:linear-gradient(150deg, rgba(201,162,39,.30), rgba(201,162,39,.08));
+  border:1px solid var(--rand); margin-bottom:6px;
+}
+.kachel h3{ margin:0; color:var(--akzent); font-size:1.08rem; }
+.kachel p{ font-size:.88rem; color:var(--text-leise); margin:0; }
+.kachel .bald{
+  margin-top:auto; align-self:flex-start; font-size:.72rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase;
+  padding:4px 10px; border-radius:999px;
+  background:rgba(201,162,39,.16); color:var(--akzent); border:1px solid var(--rand);
+}
+.kachel .platzhalter-hinweis{
+  font-size:.74rem; color:var(--text-leise); opacity:.75; font-style:italic; margin-top:4px;
+}
+/* Kachel für ein fertiges Angebot */
+.kachel--fertig{ border-style:solid; border-color:var(--akzent); }
+.kachel--fertig .bald{ background:linear-gradient(180deg,var(--gold-hell),var(--gold)); color:#1c1503; border-color:transparent; }
+
+/* --- 10. Sprechender Hut -------------------------------------------- */
+.hut-box{ padding:clamp(20px,3.5vw,40px); max-width:820px; margin-inline:auto; }
+.hut-bild{ width:150px; margin:0 auto 6px; display:block; }
+.hut-bild .falte{ transform-origin:50% 90%; }
+.hut-bild.wackelt{ animation:hut-wackeln 1.6s ease-in-out infinite; }
+@keyframes hut-wackeln{
+  0%,100%{ transform:rotate(-3deg); }
+  50%{ transform:rotate(3deg) translateY(-4px); }
+}
+.hut-mund{ transform-origin:50% 50%; animation:hut-reden 1.1s ease-in-out infinite; }
+@keyframes hut-reden{ 0%,100%{ transform:scaleY(.4); } 50%{ transform:scaleY(1.25); } }
+
+.hut-fortschritt{
+  height:9px; border-radius:999px; background:rgba(90,70,20,.2);
+  overflow:hidden; margin:14px 0 6px;
+}
+.hut-fortschritt i{
+  display:block; height:100%; width:0%;
+  background:linear-gradient(90deg, var(--gold), var(--gold-hell));
+  transition:width .45s ease;
+}
+.hut-zaehler{ font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:#8a7331; text-align:center; }
+.hut-frage{
+  font-family:'Cinzel',serif; font-size:clamp(1.1rem,.9rem+1vw,1.5rem);
+  color:#4a3c12; text-align:center; margin:14px 0 18px;
+}
+.hut-antworten{ display:grid; gap:10px; }
+.hut-antwort{
+  text-align:left; font-family:inherit; font-size:1rem; cursor:pointer;
+  padding:.85em 1.1em; border-radius:12px; color:var(--tinte);
+  background:rgba(255,255,255,.55); border:1px solid rgba(120,92,20,.35);
+  transition:all .18s ease;
+}
+.hut-antwort:hover{ background:#fff; border-color:var(--gold); transform:translateX(4px); }
+.hut-antwort .buchstabe{
+  display:inline-grid; place-items:center; width:26px; height:26px; border-radius:50%;
+  background:var(--gold); color:#1c1503; font-weight:900; margin-right:10px; font-size:.85rem;
+}
+
+/* Ergebnis des Hutes */
+.hut-ergebnis{ text-align:center; }
+.hut-ergebnis .ergebnis-wappen{ width:150px; margin:0 auto 8px; display:block; animation:ergebnis-rein .8s cubic-bezier(.2,.9,.3,1.4); }
+@keyframes ergebnis-rein{
+  0%{ transform:scale(.2) rotate(-25deg); opacity:0; }
+  60%{ transform:scale(1.12) rotate(6deg); opacity:1; }
+  100%{ transform:scale(1) rotate(0); }
+}
+.hut-ergebnis .ruf{ font-family:'Cormorant Garamond',serif; font-style:italic; color:#8a7331; }
+.hut-ergebnis h3{ font-size:clamp(1.6rem,1.1rem+3vw,2.8rem); color:var(--hd, #4a3c12); margin:2px 0 8px; }
+.balken-liste{ max-width:460px; margin:18px auto 0; display:grid; gap:9px; text-align:left; }
+.balken-zeile{ display:grid; grid-template-columns:110px 1fr 44px; align-items:center; gap:10px; font-size:.85rem; color:#5b4a12; }
+.balken{ height:11px; border-radius:999px; background:rgba(90,70,20,.16); overflow:hidden; }
+.balken i{ display:block; height:100%; width:0; border-radius:999px; transition:width 1s cubic-bezier(.2,.8,.3,1); }
+
+/* --- 11. Wissenskarten ---------------------------------------------- */
+.wissen-raster{ display:grid; gap:18px; grid-template-columns:repeat(auto-fit, minmax(255px,1fr)); }
+.wissen-karte{ padding:22px 20px; }
+.wissen-karte .wk-icon{ font-size:1.9rem; }
+.wissen-karte h3{ color:#5b4a12; margin:6px 0 6px; }
+.wissen-karte p{ font-size:.92rem; margin:0; }
+.wissen-karte .wusstest-du{
+  margin-top:12px; padding-top:10px; border-top:1px dashed rgba(120,92,20,.4);
+  font-size:.85rem; font-style:italic; color:#6b5620;
+}
+
+/* --- 12. Fußzeile ---------------------------------------------------- */
+.fusszeile{
+  border-top:1px solid var(--rand); padding:40px 0 30px; text-align:center;
+  background:rgba(5,8,25,.5);
+}
+html[data-modus="lumos"] .fusszeile{ background:rgba(255,250,240,.6); }
+.fusszeile p{ color:var(--text-leise); font-size:.88rem; margin:.3em 0; }
+.fusszeile .haftung{ max-width:60ch; margin-inline:auto; font-size:.8rem; opacity:.85; }
+.fuss-sterne{ color:var(--gold); letter-spacing:8px; margin-bottom:10px; }
+
+/* --- 13. Overlays ---------------------------------------------------- */
+.overlay{
+  position:fixed; inset:0; z-index:1200; display:none;
+  place-items:center; padding:20px;
+  background:rgba(4,6,20,.82); backdrop-filter:blur(6px);
+}
+.overlay.offen{ display:grid; animation:einblenden .3s ease; }
+@keyframes einblenden{ from{ opacity:0; } to{ opacity:1; } }
+.overlay-box{
+  width:min(680px, 100%); max-height:90svh; overflow-y:auto; padding:28px 24px; text-align:center;
+  animation:box-rein .4s cubic-bezier(.2,.9,.3,1.3);
+}
+@keyframes box-rein{ from{ transform:translateY(24px) scale(.96); opacity:0; } }
+.overlay-box h2{ color:#4a3c12; font-size:clamp(1.4rem,1.1rem+1.6vw,2rem); }
+.overlay-box p{ color:#5b4a12; }
+.haus-wahl-raster{ display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin:20px 0 16px; }
+.haus-wahl-knopf{
+  cursor:pointer; padding:14px 8px; border-radius:14px; font-family:'Cinzel',serif; font-weight:700;
+  color:#fff; border:2px solid transparent; background:linear-gradient(160deg,var(--hd) 0%, #0b0f24 145%);
+  display:flex; flex-direction:column; align-items:center; gap:6px; font-size:.9rem;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.haus-wahl-knopf:hover{ transform:translateY(-4px) scale(1.03); box-shadow:0 10px 24px rgba(0,0,0,.35); }
+.haus-wahl-knopf svg{ width:52px; height:60px; }
+#punkte-uebersicht svg{ width:104px; height:125px; display:block; margin-inline:auto; }
+
+/* Abzeichen-Popup */
+.abzeichen-kreis{
+  width:120px; height:120px; margin:0 auto 12px; border-radius:50%; display:grid; place-items:center;
+  font-size:3rem; background:radial-gradient(circle at 35% 30%, #fff6cf, var(--gold) 60%, #8b6d15);
+  box-shadow:0 0 0 8px rgba(201,162,39,.22), 0 12px 30px rgba(0,0,0,.4);
+  animation:abzeichen-rein .7s cubic-bezier(.2,.9,.3,1.5);
+}
+@keyframes abzeichen-rein{ 0%{ transform:scale(0) rotate(-90deg); } 70%{ transform:scale(1.15) rotate(8deg); } 100%{ transform:scale(1) rotate(0); } }
+#konfetti-canvas{ position:fixed; inset:0; z-index:1400; pointer-events:none; }
+
+/* Kleine Toast-Nachricht unten */
+.toast{
+  position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(120%);
+  z-index:1300; padding:12px 20px; border-radius:999px;
+  background:linear-gradient(180deg,var(--gold-hell),var(--gold)); color:#1c1503;
+  font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,.4); max-width:88vw; text-align:center;
+  transition:transform .45s cubic-bezier(.2,.9,.3,1.4);
+}
+.toast.sichtbar{ transform:translateX(-50%) translateY(0); }
+
+/* Abzeichen-Leiste in der Punkte-Übersicht */
+.abzeichen-leiste{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px; }
+.abzeichen-chip{
+  display:flex; align-items:center; gap:7px; padding:7px 13px; border-radius:999px;
+  border:1px solid rgba(120,92,20,.4); background:rgba(255,255,255,.5); color:#5b4a12;
+  font-size:.83rem; font-weight:700; opacity:.42; filter:grayscale(1);
+  transition:opacity .3s ease, filter .3s ease;
+}
+.abzeichen-chip.frei{ opacity:1; filter:none; background:linear-gradient(180deg,#fff6cf,#e7cd7d); }
+
+/* --- 14. Responsiv ---------------------------------------------------- */
+@media (max-width: 1000px){
+  .haupt-nav a{ padding:8px 9px; font-size:.86rem; }
+  .logo span{ display:none; }
+}
+@media (max-width: 860px){
+  .burger{ display:block; order:3; }
+  .haupt-nav{
+    position:fixed; top:var(--kopf-hoehe); left:0; right:0;
+    background:linear-gradient(180deg, rgba(9,13,36,.99), rgba(13,19,48,.99));
+    border-bottom:1px solid var(--rand);
+    max-height:0; overflow:hidden; transition:max-height .4s ease; margin:0;
+  }
+  html[data-modus="lumos"] .haupt-nav{ background:linear-gradient(180deg,#fbf5e8,#f3ead6); }
+  .haupt-nav.offen{ max-height:70svh; overflow-y:auto; }
+  .haupt-nav ul{ flex-direction:column; padding:10px 5vw 18px; gap:2px; }
+  .haupt-nav a{ padding:13px 14px; font-size:1rem; border-radius:12px; }
+  .kopf-werkzeuge{ margin-left:auto; }
+  .punkte-anzeige span.pt-text{ display:none; }
+}
+@media (max-width: 560px){
+  :root{ --kopf-hoehe:58px; }
+  .haus-karte{ height:452px; }
+  .zauber-raster{ grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); }
+  .balken-zeile{ grid-template-columns:82px 1fr 38px; font-size:.78rem; }
+  .zauberstab-buehne{ width:180px; height:64px; }
+  #funken-canvas{ inset:-34px -26px; width:232px; height:132px; }
+  .icon-knopf{ width:36px; height:36px; font-size:.95rem; }
+}
+
+/* --- 15. Bewegung reduzieren ----------------------------------------- */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important; animation-iteration-count:1 !important;
+    transition-duration:.001ms !important; scroll-behavior:auto !important;
+  }
+  .kerze, #schnatz, .scroll-pfeil{ display:none !important; }
+  .karte-innen{ transition:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Sprunglink für die Tastaturbedienung -->
+<a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+
+<!-- Der animierte Sternenhimmel liegt ganz hinten -->
+<canvas id="sternen-canvas" aria-hidden="true"></canvas>
+<div class="hintergrund-schleier" aria-hidden="true"></div>
+
+<!-- ============ KOPFZEILE ============ -->
+<header class="kopfzeile">
+  <div class="kopf-inner">
+
+    <a class="logo" href="#start" aria-label="Zur Startseite">
+      <!-- Kleines Wappen-Symbol als SVG -->
+      <svg viewBox="0 0 40 44" aria-hidden="true">
+        <path d="M20 2 L37 8 v16c0 10-8 16-17 18C11 40 3 34 3 24V8Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M20 11v22M11 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="20" cy="18" r="3" fill="currentColor"/>
+      </svg>
+      <span>Welt der Magie</span>
+    </a>
+
+    <nav class="haupt-nav" id="hauptnavigation" aria-label="Hauptnavigation">
+      <ul>
+        <li><a href="#start">Start</a></li>
+        <li><a href="#haeuser">Häuser</a></li>
+        <li><a href="#zauberspruch-sektion">Zaubersprüche</a></li>
+        <li><a href="#spiele">Spiele</a></li>
+        <li><a href="#tests">Tests</a></li>
+        <li><a href="#quiz">Quiz</a></li>
+        <li><a href="#wissen">Wissen</a></li>
+      </ul>
+    </nav>
+
+    <div class="kopf-werkzeuge">
+      <!-- Punkteanzeige des Hauspokals -->
+      <button class="punkte-anzeige" id="punkte-anzeige" aria-label="Hauspunkte anzeigen">
+        <span class="wappen-punkt" id="wappen-punkt" aria-hidden="true">✦</span>
+        <span id="punkte-zahl">0</span><span class="pt-text">&nbsp;Punkte</span>
+      </button>
+
+      <!-- Ton an/aus. Startzustand: aus. -->
+      <button class="icon-knopf" id="ton-knopf" aria-pressed="false" aria-label="Ton einschalten" title="Ton an/aus">🔇</button>
+
+      <!-- Lumos (hell) / Nox (dunkel) -->
+      <button class="icon-knopf" id="modus-knopf" aria-label="Zu Lumos wechseln – heller Modus" title="Lumos / Nox">💡</button>
+
+      <!-- Burger-Menü für kleine Bildschirme -->
+      <button class="burger" id="burger" aria-expanded="false" aria-controls="hauptnavigation" aria-label="Menü öffnen">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="hauptinhalt">
+
+<!-- ============ 1. STARTSEITE ============ -->
+<section id="start" class="hero" aria-labelledby="hero-titel">
+  <!-- Schwebende Kerzen werden per JavaScript eingesetzt -->
+  <div class="kerzen" id="kerzen" aria-hidden="true"></div>
+
+  <div class="hero-inhalt behaelter">
+    <p class="hero-krone">Hogwarts · Bibliothek bei Nacht</p>
+    <h1 id="hero-titel">Willkommen in der<br><span class="funkel">Welt der Magie</span></h1>
+    <p class="hero-text">
+      Schnapp dir deinen Zauberstab! Hier findest du Zaubersprüche, die vier Häuser,
+      knifflige Quizze und den Sprechenden Hut. Alles selbst gemacht – von Fans für Fans.
+    </p>
+    <div class="hero-knoepfe">
+      <a href="#haeuser" class="knopf" id="betritt-knopf">🚪 Betritt Hogwarts</a>
+      <button class="knopf knopf--geist" id="hero-hut-knopf">🎩 Welches Haus bist du?</button>
+    </div>
+  </div>
+
+  <div class="scroll-pfeil" aria-hidden="true">▾</div>
+</section>
+
+<!-- ============ 2. DIE VIER HÄUSER ============ -->
+<section id="haeuser" aria-labelledby="haeuser-titel">
+  <div class="behaelter">
+    <div class="abschnitt-kopf">
+      <h2 id="haeuser-titel">Die vier Häuser</h2>
+      <div class="zierlinie" aria-hidden="true"><span>✦</span></div>
+      <p>Jedes Haus hat seinen eigenen Charakter. Fahre mit der Maus über eine Karte
+         oder tippe sie an – dann dreht sie sich um und verrät dir mehr.</p>
+    </div>
+    <!-- Die vier Karten baut JavaScript aus den Hausdaten -->
+    <div class="haus-raster" id="haus-raster"></div>
+  </div>
+</section>
+
+<!-- ============ 3. ZAUBERSPRÜCHE ============ -->
+<section id="zauberspruch-sektion" aria-labelledby="zauber-titel">
+  <div class="behaelter">
+    <div class="abschnitt-kopf">
+      <h2 id="zauber-titel">Das große Zauberbuch</h2>
+      <div class="zierlinie" aria-hidden="true"><span>✦</span></div>
+      <p>Suche nach einem Zauberspruch oder filtere nach Fachgebiet.
+         Klicke einen Spruch an – dann schwingt der Zauberstab!</p>
+    </div>
+
+    <!-- Bühne mit Zauberstab, Funken und Schreibmaschinen-Text -->
+    <div class="zauber-buehne pergament" id="zauber-buehne">
+      <div class="zauberstab-buehne">
+        <canvas id="funken-canvas" aria-hidden="true"></canvas>
+        <!-- Zauberstab als selbstgebautes SVG -->
+        <svg id="zauberstab" viewBox="0 0 230 80" aria-hidden="true">
+          <defs>
+            <linearGradient id="holz" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#3a2414"/>
+              <stop offset="55%" stop-color="#6b4526"/>
+              <stop offset="100%" stop-color="#a5793f"/>
+            </linearGradient>
+            <radialGradient id="spitzenlicht">
+              <stop offset="0%" stop-color="#fff8d8" stop-opacity="1"/>
+              <stop offset="60%" stop-color="#f0d275" stop-opacity=".55"/>
+              <stop offset="100%" stop-color="#c9a227" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- Griff -->
+          <rect x="8" y="38" width="52" height="15" rx="7" fill="#2e1c0f"/>
+          <path d="M14 40h40M14 45h40M14 50h40" stroke="#6b4526" stroke-width="1.4" opacity=".8"/>
+          <!-- Stab -->
+          <path d="M58 45.5 L196 40.5 L196 44 L58 50 Z" fill="url(#holz)"/>
+          <!-- Leuchtende Spitze -->
+          <circle id="stab-licht" cx="198" cy="42" r="26" fill="url(#spitzenlicht)" opacity="0"/>
+          <circle cx="197" cy="42" r="3.2" fill="#fff3c4" opacity=".9"/>
+        </svg>
+      </div>
+
+      <p class="buehne-meta" id="buehne-meta">Wähle einen Zauberspruch</p>
+      <p class="buehne-name" id="buehne-name">&nbsp;</p>
+      <p class="buehne-wirkung" id="buehne-wirkung">Tippe unten auf einen Spruch, dann erfährst du, was er bewirkt.</p>
+    </div>
+
+    <div class="zauber-werkzeuge">
+      <div class="suchfeld-wrap">
+        <span class="lupe" aria-hidden="true">🔍</span>
+        <label for="zauber-suche" class="sr-only">Zaubersprüche durchsuchen</label>
+        <input type="search" id="zauber-suche" placeholder="Zauberspruch suchen, z. B. Lumos …" autocomplete="off">
+      </div>
+      <div class="filter-knoepfe" id="filter-knoepfe" role="group" aria-label="Nach Fachgebiet filtern"></div>
+      <p class="hut-zaehler" id="zauber-anzahl" aria-live="polite"></p>
+    </div>
+
+    <div class="zauber-raster" id="zauber-raster"></div>
+  </div>
+</section>
+
+<!-- ============ 4. SPIELE ============ -->
+<section id="spiele" aria-labelledby="spiele-titel">
+  <div class="behaelter">
+    <div class="abschnitt-kopf">
+      <h2 id="spiele-titel">Magische Spiele</h2>
+      <div class="zierlinie" aria-hidden="true"><span>✦</span></div>
+      <p>Hier entstehen die Mini-Spiele. Jedes gewonnene Spiel bringt Punkte für dein Haus.</p>
+    </div>
+    <div class="kachel-raster" id="spiele-raster"></div>
+  </div>
+</section>
+
+<!-- ============ 5. TESTS ============ -->
+<section id="tests" aria-labelledby="tests-titel">
+  <div class="behaelter">
+    <div class="abschnitt-kopf">
+      <h2 id="tests-titel">Der Sprechende Hut</h2>
+      <div class="zierlinie" aria-hidden="true"><span>✦</span></div>
+      <p>Zehn Fragen, ein Ergebnis: In welches Haus gehörst du wirklich?</p>
+    </div>
+
+    <div class="hut-box pergament" id="hut-box">
+      <!-- Inhalt wird von JavaScript gefüllt -->
+    </div>
+
+    <div class="kachel-raster" id="tests-raster" style="margin-top:26px"></div>
+  </div>
+</section>
+
+<!-- ============ 6. QUIZ ============ -->
+<section id="quiz" aria-labelledby="quiz-titel">
+  <div class="behaelter">
+    <div class="abschnitt-kopf">
+      <h2 id="quiz-titel">Das große Wissensquiz</h2>
+      <div class="zierlinie" aria-hidden="true"><span>✦</span></div>
+      <p>Drei Schwierigkeitsstufen – vom Erstklässler bis zur Schulsprecherin.</p>
+    </div>
+    <div class="kachel-raster" id="quiz-raster"></div>
+  </div>
+</section>
+
+<!-- ============ 7. WISSEN ============ -->
+<section id="wissen" aria-labelledby="wissen-titel">
+  <div class="behaelter">
+    <div class="abschnitt-kopf">
+      <h2 id="wissen-titel">Gut zu wissen</h2>
+      <div class="zierlinie" aria-hidden="true"><span>✦</span></div>
+      <p>Kurze Infokarten über die magische Welt – schnell gelesen, gut gemerkt.</p>
+    </div>
+    <div class="wissen-raster" id="wissen-raster"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ 8. FUSSZEILE ============ -->
+<footer class="fusszeile">
+  <div class="behaelter">
+    <p class="fuss-sterne" aria-hidden="true">✦ ✦ ✦</p>
+    <p><strong>Eine Fanseite von Fans für Fans — nicht offiziell.</strong></p>
+    <p class="haftung">
+      Diese Seite ist ein Schulprojekt. Alle Grafiken, Texte und Spiele wurden selbst gemacht.
+      Sie steht in keiner Verbindung zu den Rechteinhabern der Bücher oder Filme und
+      verdient kein Geld.
+    </p>
+    <p style="opacity:.7">Gebaut mit HTML, CSS und JavaScript · ohne Zauberei, aber fast. ✨</p>
+  </div>
+</footer>
+
+<!-- ============ OVERLAY: HAUSWAHL ============ -->
+<div class="overlay" id="haus-overlay" role="dialog" aria-modal="true" aria-labelledby="haus-overlay-titel">
+  <div class="overlay-box pergament">
+    <h2 id="haus-overlay-titel">Willkommen in Hogwarts!</h2>
+    <p>Bevor es losgeht: Für welches Haus sammelst du Punkte?<br>
+       Du kannst dich auch vom Sprechenden Hut einteilen lassen.</p>
+    <div class="haus-wahl-raster" id="haus-wahl-raster"></div>
+    <button class="knopf knopf--geist" id="zum-hut-knopf">🎩 Lass den Hut entscheiden</button>
+    <p style="margin-top:14px"><button class="filter-knopf" id="spaeter-knopf">Später entscheiden</button></p>
+  </div>
+</div>
+
+<!-- ============ OVERLAY: PUNKTE-ÜBERSICHT ============ -->
+<div class="overlay" id="punkte-overlay" role="dialog" aria-modal="true" aria-labelledby="punkte-overlay-titel">
+  <div class="overlay-box pergament">
+    <h2 id="punkte-overlay-titel">Dein Hauspokal</h2>
+    <div id="punkte-uebersicht"></div>
+    <div class="abzeichen-leiste" id="abzeichen-leiste"></div>
+    <p style="margin-top:18px"><button class="knopf" id="punkte-schliessen">Weiter zaubern</button></p>
+    <p style="font-size:.78rem; opacity:.75; margin:0">
+      Hinweis: Deine Punkte gelten nur für diesen Besuch. Beim Neuladen der Seite fängst du frisch an.
+    </p>
+  </div>
+</div>
+
+<!-- ============ OVERLAY: ABZEICHEN ============ -->
+<div class="overlay" id="abzeichen-overlay" role="dialog" aria-modal="true" aria-labelledby="abzeichen-titel">
+  <div class="overlay-box pergament">
+    <div class="abzeichen-kreis" id="abzeichen-kreis" aria-hidden="true">🏅</div>
+    <p class="hut-zaehler">Neues Abzeichen freigeschaltet</p>
+    <h2 id="abzeichen-titel">Erstklässler</h2>
+    <p id="abzeichen-text">Du hast 100 Punkte gesammelt. Weiter so!</p>
+    <button class="knopf" id="abzeichen-schliessen">Juhu, danke!</button>
+  </div>
+</div>
+
+<canvas id="konfetti-canvas" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =====================================================================
+   TEIL A — DATEN
+   Hier stehen alle Inhalte der Seite. Wenn du etwas ändern willst,
+   änderst du am besten hier drin. Der Rest passt sich automatisch an.
+   ===================================================================== */
+
+/* Der gesamte Spielstand liegt im window-Objekt.
+   WICHTIG: Wir benutzen absichtlich KEIN localStorage. Beim Neuladen
+   der Seite fängt alles von vorne an. */
+window.HP = {
+  haus: null,          // gewähltes Haus, z. B. "gryffindor"
+  punkte: 0,           // Hauspunkte
+  abzeichen: [],       // freigeschaltete Abzeichen
+  tonAn: false,        // Ton ist am Anfang AUS
+  hutFrage: 0,         // aktuelle Frage im Hut-Test
+  hutPunkte: { gryffindor:0, hufflepuff:0, ravenclaw:0, slytherin:0 },
+  hutFertig: false,
+  gesehenerSpruch: null,
+  filter: 'alle'
+};
+
+/* --- Die vier Häuser ------------------------------------------------ */
+const HAEUSER = {
+  gryffindor: {
+    name: 'Gryffindor',
+    tier: 'Der Löwe',
+    farbe1: '#7f0909', farbe2: '#d3a625', farbeDunkel: '#7f0909',
+    motto: 'Mut, Wagemut und ein großes Herz.',
+    text: 'In Gryffindor landen die Mutigen. Hier traut man sich, für andere einzustehen – auch wenn die Knie zittern. Der Gemeinschaftsraum liegt in einem Turm, hinter dem Bild einer Dame in Rosa.',
+    eigenschaften: ['Mut', 'Tapferkeit', 'Hilfsbereitschaft', 'Abenteuerlust'],
+    schueler: ['Harry Potter', 'Hermine Granger', 'Ron Weasley', 'Neville Longbottom'],
+    element: 'Feuer', geist: 'Der Fast Kopflose Nick'
+  },
+  hufflepuff: {
+    name: 'Hufflepuff',
+    tier: 'Der Dachs',
+    farbe1: '#eeb939', farbe2: '#372e29', farbeDunkel: '#8a6410',
+    motto: 'Fleiß, Treue und echte Freundschaft.',
+    text: 'Hufflepuffs geben nie auf und lassen niemanden allein. Sie sind fair, geduldig und richtig gute Freunde. Ihr gemütlicher Gemeinschaftsraum liegt neben der Küche – es duftet immer nach frischem Brot.',
+    eigenschaften: ['Fleiß', 'Treue', 'Geduld', 'Fairness'],
+    schueler: ['Cedric Diggory', 'Nymphadora Tonks', 'Newt Scamander', 'Hannah Abbott'],
+    element: 'Erde', geist: 'Der Fette Mönch'
+  },
+  ravenclaw: {
+    name: 'Ravenclaw',
+    tier: 'Der Adler',
+    farbe1: '#0e1a40', farbe2: '#7a5a26', farbeDunkel: '#16255c',
+    motto: 'Klugheit, Neugier und kluge Ideen.',
+    text: 'Ravenclaws stellen Fragen – ganz viele. Sie lesen gern, tüfteln gern und haben oft überraschende Einfälle. Um in ihren Turm zu kommen, muss man ein Rätsel lösen. Ein Passwort gibt es nicht!',
+    eigenschaften: ['Klugheit', 'Neugier', 'Kreativität', 'Weisheit'],
+    schueler: ['Luna Lovegood', 'Cho Chang', 'Filius Flitwick', 'Padma Patil'],
+    element: 'Luft', geist: 'Die Graue Dame'
+  },
+  slytherin: {
+    name: 'Slytherin',
+    tier: 'Die Schlange',
+    farbe1: '#1a472a', farbe2: '#aaaaaa', farbeDunkel: '#1a472a',
+    motto: 'Ehrgeiz, Cleverness und starker Wille.',
+    text: 'Slytherins wissen, was sie wollen, und finden clevere Wege dorthin. Sie halten fest zusammen und sind stolz auf ihr Haus. Ihr Gemeinschaftsraum liegt tief unten am See – durch die Fenster schwimmen manchmal Fische vorbei.',
+    eigenschaften: ['Ehrgeiz', 'Cleverness', 'Zielstrebigkeit', 'Zusammenhalt'],
+    schueler: ['Severus Snape', 'Merlin', 'Horace Slughorn', 'Andromeda Tonks'],
+    element: 'Wasser', geist: 'Der Blutige Baron'
+  }
+};
+const HAUS_KEYS = ['gryffindor','hufflepuff','ravenclaw','slytherin'];
+
+/* --- Die Zaubersprüche ---------------------------------------------- */
+/* name = Zauberformel, wirkung = kindgerechte Erklärung,
+   kategorie = Fachgebiet, stufe = Schwierigkeit von 1 bis 3           */
+const ZAUBER = [
+  { name:'Wingardium Leviosa', kategorie:'Zauberkunst',   stufe:2, wirkung:'Lässt Gegenstände schweben. Wichtig ist die Betonung: Win-GAR-dium Levi-O-sa – und ein Schlenker mit dem Handgelenk.' },
+  { name:'Lumos',              kategorie:'Zauberkunst',   stufe:1, wirkung:'An der Zauberstabspitze leuchtet ein kleines Licht. Perfekt, um im dunklen Gang den Weg zu finden.' },
+  { name:'Lumos Maxima',       kategorie:'Zauberkunst',   stufe:2, wirkung:'Wie Lumos, nur viel heller. Der Lichtball kann sogar einen ganzen Raum erhellen.' },
+  { name:'Nox',                kategorie:'Zauberkunst',   stufe:1, wirkung:'Macht das Licht wieder aus. Der Gegenzauber zu Lumos – kurz und praktisch.' },
+  { name:'Alohomora',          kategorie:'Zauberkunst',   stufe:1, wirkung:'Öffnet einfache Schlösser mit einem leisen Klicken. Bei verzauberten Türen hilft er allerdings nicht.' },
+  { name:'Colloportus',        kategorie:'Zauberkunst',   stufe:2, wirkung:'Verschließt eine Tür mit einem schmatzenden Geräusch. Das Gegenstück zu Alohomora.' },
+  { name:'Expelliarmus',       kategorie:'Verteidigung',  stufe:2, wirkung:'Der Entwaffnungszauber. Der Zauberstab des Gegenübers fliegt einfach aus der Hand – niemand wird verletzt.' },
+  { name:'Protego',            kategorie:'Verteidigung',  stufe:2, wirkung:'Baut ein unsichtbares Schutzschild auf. Zauber prallen daran ab wie ein Ball an der Wand.' },
+  { name:'Expecto Patronum',   kategorie:'Verteidigung',  stufe:3, wirkung:'Ruft einen Patronus – ein leuchtendes Tier aus purem Licht. Dafür brauchst du eine richtig schöne Erinnerung.' },
+  { name:'Riddikulus',         kategorie:'Verteidigung',  stufe:2, wirkung:'Verwandelt einen Irrwicht in etwas Lustiges. Lachen ist hier die stärkste Waffe.' },
+  { name:'Petrificus Totalus', kategorie:'Verteidigung',  stufe:2, wirkung:'Die Ganzkörperklammer. Arme und Beine klappen zusammen, und man kann sich kurz nicht bewegen.' },
+  { name:'Stupor',             kategorie:'Verteidigung',  stufe:2, wirkung:'Ein roter Lichtblitz, der jemanden für eine Weile einschlafen lässt. Beliebt im Duellierclub.' },
+  { name:'Rennervate',         kategorie:'Heilzauber',    stufe:2, wirkung:'Weckt jemanden wieder auf, der von einem Schockzauber getroffen wurde. Der Gegenzauber zu Stupor.' },
+  { name:'Finite Incantatem',  kategorie:'Verteidigung',  stufe:2, wirkung:'Beendet laufende Zauber. Sehr nützlich, wenn im Klassenzimmer etwas aus dem Ruder läuft.' },
+  { name:'Immobulus',          kategorie:'Verteidigung',  stufe:2, wirkung:'Hält alles Bewegliche an – zum Beispiel einen Schwarm frecher Wichtel mitten im Flug.' },
+  { name:'Confundo',           kategorie:'Verteidigung',  stufe:3, wirkung:'Der Verwirrungszauber. Wer ihn abbekommt, vergisst kurz, was er eigentlich vorhatte.' },
+  { name:'Rictusempra',        kategorie:'Verteidigung',  stufe:1, wirkung:'Der Kitzelfluch. Das Gegenüber muss so lachen, dass es sich kaum noch auf den Beinen hält.' },
+  { name:'Tarantallegra',      kategorie:'Verteidigung',  stufe:2, wirkung:'Die Beine fangen an, wild zu tanzen. Sieht komisch aus und ist völlig harmlos.' },
+  { name:'Accio',              kategorie:'Zauberkunst',   stufe:2, wirkung:'Der Herbeirufezauber. Dein Buch, dein Besen oder dein Schal fliegen dir direkt in die Hand.' },
+  { name:'Reparo',             kategorie:'Alltagszauber', stufe:1, wirkung:'Repariert kaputte Dinge. Die Scherben einer Tasse setzen sich von selbst wieder zusammen.' },
+  { name:'Aguamenti',          kategorie:'Zauberkunst',   stufe:2, wirkung:'Aus der Zauberstabspitze sprudelt klares Wasser – genug für ein Glas oder für durstige Pflanzen.' },
+  { name:'Incendio',           kategorie:'Zauberkunst',   stufe:2, wirkung:'Entfacht ein kleines Feuer, zum Beispiel im Kamin. Nur unter Aufsicht einer Lehrkraft!' },
+  { name:'Diffindo',           kategorie:'Zauberkunst',   stufe:2, wirkung:'Trennt Dinge sauber durch – etwa ein Band oder ein Stück Pergament.' },
+  { name:'Episkey',            kategorie:'Heilzauber',    stufe:2, wirkung:'Heilt kleine Blessuren wie eine verstauchte Nase. Es kribbelt erst warm, dann kalt.' },
+  { name:'Ferula',             kategorie:'Heilzauber',    stufe:2, wirkung:'Zaubert eine Schiene und einen Verband um ein verletztes Bein. Erste Hilfe auf magisch.' },
+  { name:'Anapneo',            kategorie:'Heilzauber',    stufe:1, wirkung:'Macht die Atemwege wieder frei, wenn sich jemand verschluckt hat.' },
+  { name:'Vulnera Sanentur',   kategorie:'Heilzauber',    stufe:3, wirkung:'Ein sanfter Singsang, der tiefe Schrammen langsam wieder zugehen lässt. Nur für erfahrene Heiler.' },
+  { name:'Scourgify',          kategorie:'Alltagszauber', stufe:1, wirkung:'Putzt gründlich. Schlammige Schuhe oder ein klebriger Tisch sind im Nu wieder sauber.' },
+  { name:'Tergeo',             kategorie:'Alltagszauber', stufe:1, wirkung:'Saugt Flecken auf – Tinte, Soße oder Farbe verschwinden einfach vom Stoff.' },
+  { name:'Sonorus',            kategorie:'Zauberkunst',   stufe:2, wirkung:'Macht deine Stimme so laut wie ein Megafon. Kommentatoren beim Quidditch lieben ihn.' },
+  { name:'Quietus',            kategorie:'Zauberkunst',   stufe:1, wirkung:'Dreht die Lautstärke wieder herunter. Der Gegenzauber zu Sonorus.' },
+  { name:'Silencio',           kategorie:'Zauberkunst',   stufe:2, wirkung:'Macht ein Geräusch stumm. Praktisch bei einem quakenden Frosch mitten im Unterricht.' },
+  { name:'Muffliato',          kategorie:'Zauberkunst',   stufe:2, wirkung:'Erzeugt ein leises Summen in fremden Ohren, damit niemand mithört. Ein echter Flüsterzauber.' },
+  { name:'Engorgio',           kategorie:'Verwandlung',   stufe:2, wirkung:'Lässt Dinge größer werden. Aus einem Radiergummi wird schnell ein Kissen.' },
+  { name:'Reducio',            kategorie:'Verwandlung',   stufe:2, wirkung:'Schrumpft Dinge wieder auf Normalgröße. Der Gegenzauber zu Engorgio.' },
+  { name:'Orchideous',         kategorie:'Verwandlung',   stufe:1, wirkung:'Aus der Zauberstabspitze wächst ein Strauß Blumen. Ein schönes Geschenk zum Geburtstag.' },
+  { name:'Avis',               kategorie:'Verwandlung',   stufe:2, wirkung:'Ein kleiner Vogelschwarm flattert aus dem Zauberstab und zwitschert los.' },
+  { name:'Evanesco',           kategorie:'Verwandlung',   stufe:3, wirkung:'Lässt Dinge verschwinden – ins Nirgendwo. Klingt leicht, ist aber ziemlich knifflig.' },
+  { name:'Vera Verto',         kategorie:'Verwandlung',   stufe:3, wirkung:'Verwandelt ein Tier in einen Gegenstand, zum Beispiel eine Ratte in ein Wasserglas.' },
+  { name:'Geminio',            kategorie:'Verwandlung',   stufe:3, wirkung:'Erzeugt eine Kopie eines Gegenstands. Die Kopie sieht echt aus, taugt aber nicht viel.' },
+  { name:'Locomotor',          kategorie:'Zauberkunst',   stufe:2, wirkung:'Setzt einen Gegenstand in Bewegung. Man ruft den Namen dazu, etwa "Locomotor Koffer!".' },
+  { name:'Descendo',           kategorie:'Zauberkunst',   stufe:2, wirkung:'Bewegt Dinge nach unten. Gut, um etwas vom obersten Regal zu holen.' },
+  { name:'Alarte Ascendare',   kategorie:'Zauberkunst',   stufe:2, wirkung:'Schleudert einen Gegenstand steil nach oben in die Luft.' },
+  { name:'Waddiwasi',          kategorie:'Zauberkunst',   stufe:2, wirkung:'Schießt etwas Kleines aus einer Ritze heraus – zum Beispiel Kaugummi aus einem Schlüsselloch.' },
+  { name:'Point Me',           kategorie:'Zauberkunst',   stufe:1, wirkung:'Der Vier-Punkte-Zauber. Der Zauberstab dreht sich auf der Handfläche und zeigt nach Norden.' }
+];
+
+/* Die Fachgebiete für die Filterknöpfe */
+const KATEGORIEN = ['alle','Zauberkunst','Verwandlung','Verteidigung','Heilzauber','Alltagszauber'];
+
+/* --- Fragen des Sprechenden Hutes ------------------------------------ */
+/* Jede Antwort verteilt Punkte an die vier Häuser:
+   [Gryffindor, Hufflepuff, Ravenclaw, Slytherin]                       */
+const HUT_FRAGEN = [
+  { frage:'Es ist Mitternacht und im Gang klappert etwas. Was machst du?', antworten:[
+    { text:'Sofort nachschauen – vielleicht braucht jemand Hilfe.',        w:[3,1,0,1] },
+    { text:'Erst die Freundinnen wecken, dann gemeinsam losgehen.',        w:[1,3,0,1] },
+    { text:'Aus dem Fenster spähen und überlegen, was es sein könnte.',    w:[0,1,3,1] },
+    { text:'Leise folgen und beobachten, ohne gesehen zu werden.',         w:[1,0,1,3] }
+  ]},
+  { frage:'Welches Schulfach klingt für dich am spannendsten?', antworten:[
+    { text:'Verteidigung gegen die dunklen Künste.',                        w:[3,0,1,1] },
+    { text:'Kräuterkunde – draußen mit den Pflanzen.',                      w:[0,3,1,0] },
+    { text:'Alte Runen und uralte Bücher.',                                 w:[0,1,3,1] },
+    { text:'Zaubertränke – da kann man richtig was erreichen.',             w:[1,0,1,3] }
+  ]},
+  { frage:'Deine Freundin hat die Hausaufgaben vergessen. Du …', antworten:[
+    { text:'sagst der Lehrerin, es war auch meine Schuld.',                 w:[3,2,0,0] },
+    { text:'hilfst ihr in der Pause, alles nachzuholen.',                   w:[1,3,1,0] },
+    { text:'erklärst ihr schnell den Trick, wie es schneller geht.',        w:[0,1,3,1] },
+    { text:'findest eine clevere Ausrede, die wirklich funktioniert.',      w:[1,0,1,3] }
+  ]},
+  { frage:'Was wäre dein Traum-Haustier in Hogwarts?', antworten:[
+    { text:'Eine treue Eule, die überall hinfliegt.',                       w:[2,2,1,0] },
+    { text:'Eine gemütliche Kröte, die immer dabei ist.',                   w:[0,3,1,0] },
+    { text:'Eine kluge Katze, die alles beobachtet.',                       w:[0,1,3,2] },
+    { text:'Eine schillernde Schlange, die niemand sonst hat.',             w:[1,0,1,3] }
+  ]},
+  { frage:'Beim Quidditch-Finale steht es unentschieden. Du bist …', antworten:[
+    { text:'Sucherin und jagst mutig hinter dem Schnatz her.',              w:[3,0,1,1] },
+    { text:'Hüterin und verteidigst zuverlässig die Ringe.',                w:[1,3,0,1] },
+    { text:'Kommentatorin und erklärst jeden Spielzug genau.',              w:[0,1,3,0] },
+    { text:'Kapitänin und hast einen ausgeklügelten Plan.',                 w:[1,1,1,3] }
+  ]},
+  { frage:'Du findest eine Karte mit einem Geheimgang. Was tust du?', antworten:[
+    { text:'Rein da, sofort! Abenteuer wartet nicht.',                      w:[3,0,0,1] },
+    { text:'Erst der Lehrerin zeigen, das ist sicherer.',                   w:[0,3,1,0] },
+    { text:'Die Karte erst einmal genau studieren.',                        w:[0,1,3,1] },
+    { text:'Für mich behalten – so ein Vorteil ist Gold wert.',            w:[1,0,1,3] }
+  ]},
+  { frage:'Wie sieht dein perfekter Sonntag aus?', antworten:[
+    { text:'Ein Ausflug mit dem Besen über die Berge.',                     w:[3,1,0,1] },
+    { text:'Kuchen backen mit den besten Freunden.',                        w:[1,3,0,0] },
+    { text:'Ein dickes Buch in der Bibliothek.',                            w:[0,1,3,0] },
+    { text:'An einem eigenen Projekt tüfteln, bis es klappt.',              w:[1,1,1,3] }
+  ]},
+  { frage:'Welches Wort passt am besten zu dir?', antworten:[
+    { text:'Mutig',                                                          w:[3,0,0,1] },
+    { text:'Verlässlich',                                                    w:[1,3,0,0] },
+    { text:'Neugierig',                                                      w:[0,1,3,0] },
+    { text:'Zielstrebig',                                                    w:[1,0,1,3] }
+  ]},
+  { frage:'Ein Erstklässler weint, weil er sich verlaufen hat. Du …', antworten:[
+    { text:'bringst ihn selbst zum richtigen Turm, egal wie weit.',         w:[3,2,0,0] },
+    { text:'setzt dich zu ihm und tröstest ihn erst einmal.',               w:[0,3,1,0] },
+    { text:'erklärst ihm, wie er sich die Treppen merken kann.',            w:[0,1,3,0] },
+    { text:'zeigst ihm die Abkürzung, die kaum jemand kennt.',              w:[1,1,1,3] }
+  ]},
+  { frage:'Was möchtest du später einmal werden?', antworten:[
+    { text:'Aurorin – Menschen beschützen.',                                w:[3,1,1,1] },
+    { text:'Heilerin im St.-Mungo-Hospital.',                               w:[1,3,1,0] },
+    { text:'Forscherin für neue Zauber.',                                   w:[0,1,3,1] },
+    { text:'Ministerin für Zauberei.',                                      w:[1,0,1,3] }
+  ]}
+];
+
+/* --- Platzhalter-Kacheln für Spiele --------------------------------- */
+const SPIELE = [
+  { icon:'🃏', titel:'Magisches Memory',      text:'Finde die Paare aus magischen Geschöpfen, bevor die Zeit abläuft.',   hinweis:'Platzhalter – Spiellogik folgt.' },
+  { icon:'⚔️', titel:'Zauberspruch-Duell',    text:'Reagiere blitzschnell und wähle den richtigen Gegenzauber.',          hinweis:'Platzhalter – Spiellogik folgt.' },
+  { icon:'🏆', titel:'Fang den Schnatz',      text:'Klicke den goldenen Schnatz, so oft du kannst, bevor er entwischt.',  hinweis:'Platzhalter – Spiellogik folgt.' },
+  { icon:'🧪', titel:'Zaubertrank brauen',    text:'Gib die Zutaten in der richtigen Reihenfolge in den Kessel.',         hinweis:'Platzhalter – Spiellogik folgt.' },
+  { icon:'🔤', titel:'Wortsuche der Zauber',  text:'Finde versteckte Zauberformeln im Buchstabengitter.',                 hinweis:'Platzhalter – Spiellogik folgt.' },
+  { icon:'🕯️', titel:'Licht im Labyrinth',    text:'Führe dein Lumos-Licht mit den Pfeiltasten durch das Schlossgewölbe.', hinweis:'Platzhalter – Spiellogik folgt.' }
+];
+
+/* --- Platzhalter-Kacheln für die Quizze ------------------------------ */
+const QUIZZE = [
+  { icon:'🌱', titel:'Stufe 1 · Erstklässler',   text:'Zehn leichte Fragen für alle, die gerade erst angekommen sind.', hinweis:'Platzhalter – Fragen folgen.' },
+  { icon:'📜', titel:'Stufe 2 · ZAG-Prüfung',    text:'Zehn mittelschwere Fragen für erfahrene Schülerinnen und Schüler.', hinweis:'Platzhalter – Fragen folgen.' },
+  { icon:'🦉', titel:'Stufe 3 · UTZ-Prüfung',    text:'Zehn knifflige Fragen für echte Kenner der magischen Welt.',      hinweis:'Platzhalter – Fragen folgen.' }
+];
+
+/* --- Platzhalter für den zweiten Test -------------------------------- */
+const TESTS_EXTRA = [
+  { icon:'🧙', titel:'Welcher Charakter bist du?', text:'Zwölf Fragen verraten dir, welcher Figur du am ähnlichsten bist.', hinweis:'Platzhalter – Fragen folgen.' },
+  { icon:'🦌', titel:'Was ist dein Patronus?',     text:'Finde heraus, welches Schutztier aus deinem Zauberstab tritt.',    hinweis:'Platzhalter – Fragen folgen.' },
+  { icon:'🪄', titel:'Welcher Zauberstab passt?',  text:'Holz, Kern und Länge – dein persönlicher Zauberstab wartet.',      hinweis:'Platzhalter – Fragen folgen.' }
+];
+
+/* --- Wissenskarten ---------------------------------------------------- */
+const WISSEN = [
+  { icon:'🧹', titel:'Quidditch',
+    text:'Der beliebteste Sport der Zauberwelt wird auf fliegenden Besen gespielt. Sieben Spieler pro Team, vier Bälle und drei Torringe. Wer den goldenen Schnatz fängt, bekommt 150 Punkte – und meistens ist das Spiel dann vorbei.',
+    tipp:'Wusstest du? Ein Quidditch-Spiel kann theoretisch monatelang dauern, wenn niemand den Schnatz fängt.' },
+  { icon:'🏪', titel:'Die Winkelgasse',
+    text:'Eine versteckte Einkaufsstraße mitten in London. Hier gibt es Zauberstäbe, Kessel, Eulen, Schulbücher und das beste Eis der Stadt. Man kommt nur hinein, wenn man die richtigen Backsteine antippt.',
+    tipp:'Wusstest du? In der Bank Gringotts fährt man mit einer rasenden Lore zu den Tresoren.' },
+  { icon:'🚂', titel:'Gleis neun dreiviertel',
+    text:'Am Bahnhof King\'s Cross versteckt sich zwischen Gleis 9 und 10 ein magischer Bahnsteig. Man läuft einfach durch die Absperrung hindurch – am besten im leichten Trab. Dahinter wartet der rote Hogwarts-Express.',
+    tipp:'Wusstest du? Der Zug fährt jedes Jahr am 1. September pünktlich um 11 Uhr los.' },
+  { icon:'⚗️', titel:'Zaubertränke',
+    text:'Zaubertränke brauen ist wie Kochen – nur dass ein Fehler dir grüne Haare bescheren kann. Die Reihenfolge der Zutaten zählt, die Rührrichtung auch. Geduld ist die wichtigste Zutat.',
+    tipp:'Wusstest du? Der Trank Felix Felicis soll für ein paar Stunden Glück bringen.' },
+  { icon:'🐉', titel:'Magische Geschöpfe',
+    text:'Hippogreife sind stolz und wollen zuerst gegrüßt werden. Nifflers sammeln alles, was glänzt. Und Thestrale kann nur sehen, wer schon einmal traurig war. In der magischen Welt ist der Wald voller Überraschungen.',
+    tipp:'Wusstest du? Eine Mandragora schreit, wenn man sie aus der Erde zieht – Ohrenschützer nicht vergessen!' },
+  { icon:'🏰', titel:'Das Schloss Hogwarts',
+    text:'Hogwarts hat 142 Treppen, und viele davon bewegen sich einfach weiter. Die Bilder an den Wänden reden, die Rüstungen singen zu Weihnachten, und die Decke der Großen Halle zeigt das Wetter draußen.',
+    tipp:'Wusstest du? Der Raum der Wünsche erscheint nur, wenn man ihn wirklich braucht.' }
+];
+
+/* --- Abzeichen des Hauspokals ---------------------------------------- */
+const ABZEICHEN = [
+  { id:'erstklaessler',    punkte:100, icon:'🌟', titel:'Erstklässler',     text:'100 Punkte! Du hast dich eingelebt und deinem Haus die ersten Punkte gebracht.' },
+  { id:'vertrauensschuel', punkte:250, icon:'🎖️', titel:'Vertrauensschüler', text:'250 Punkte! Du übernimmst Verantwortung – dein Haus ist stolz auf dich.' },
+  { id:'schulsprecher',    punkte:500, icon:'👑', titel:'Schulsprecher',    text:'500 Punkte! Du bist an der Spitze der Schule angekommen. Ganz großes Kino!' }
+];
+</script>
+
+<script>
+/* =====================================================================
+   TEIL B — HILFSFUNKTIONEN
+   ===================================================================== */
+
+/* Kurzschreibweisen für document.querySelector */
+const $  = (s, w = document) => w.querySelector(s);
+const $$ = (s, w = document) => Array.from(w.querySelectorAll(s));
+
+/* Prüft, ob die Person weniger Animation möchte (Barrierefreiheit) */
+const wenigBewegung = () =>
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Zufallszahl zwischen min und max */
+const zufall = (min, max) => Math.random() * (max - min) + min;
+
+/* Macht Text sicher für die Ausgabe in HTML */
+function sicher(text){
+  const d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+/* Zeigt kurz eine Nachricht am unteren Bildschirmrand */
+let toastTimer = null;
+function toastZeigen(text){
+  const t = $('#toast');
+  t.textContent = text;
+  t.classList.add('sichtbar');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('sichtbar'), 3200);
+}
+
+/* =====================================================================
+   TEIL C — TÖNE MIT DER WEB AUDIO API
+   Wir erzeugen alle Töne selbst. Keine Sounddateien nötig.
+   ===================================================================== */
+let audioCtx = null;
+
+/* Der Ton-Kontext darf erst nach einer Nutzeraktion starten. */
+function audioStarten(){
+  if (!audioCtx){
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) audioCtx = new AC();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+/* Spielt einen einzelnen Ton ab.
+   f1 = Startfrequenz, f2 = Endfrequenz, dauer in Sekunden */
+function ton(f1, f2, dauer, form = 'sine', laut = 0.14, verzoegerung = 0){
+  if (!window.HP.tonAn) return;
+  const ctx = audioStarten();
+  if (!ctx) return;
+  const t0 = ctx.currentTime + verzoegerung;
+  const osz = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osz.type = form;
+  osz.frequency.setValueAtTime(f1, t0);
+  if (f2 !== f1) osz.frequency.exponentialRampToValueAtTime(Math.max(1, f2), t0 + dauer);
+  gain.gain.setValueAtTime(0.0001, t0);
+  gain.gain.exponentialRampToValueAtTime(laut, t0 + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dauer);
+  osz.connect(gain).connect(ctx.destination);
+  osz.start(t0);
+  osz.stop(t0 + dauer + 0.05);
+}
+
+/* Fertige Klänge für verschiedene Ereignisse */
+const KLANG = {
+  klick:   () => ton(520, 700, 0.09, 'triangle', 0.09),
+  wechsel: () => ton(330, 620, 0.16, 'sine', 0.10),
+  zauber:  () => { // aufsteigendes Funkeln
+    ton(420, 1400, 0.34, 'sine', 0.13);
+    ton(880, 2200, 0.26, 'triangle', 0.06, 0.05);
+    ton(1320, 2640, 0.22, 'sine', 0.045, 0.11);
+  },
+  richtig: () => { ton(660, 660, 0.12, 'sine', 0.12); ton(880, 880, 0.20, 'sine', 0.12, 0.11); },
+  punkt:   () => { ton(784, 784, 0.09, 'triangle', 0.10); ton(1175, 1175, 0.16, 'triangle', 0.09, 0.08); },
+  fanfare: () => { // kleine Melodie für Abzeichen
+    [523, 659, 784, 1047].forEach((f, i) => ton(f, f, 0.30, 'triangle', 0.12, i * 0.13));
+    ton(1568, 1568, 0.6, 'sine', 0.08, 0.55);
+  },
+  hut:     () => { ton(220, 180, 0.5, 'sawtooth', 0.05); ton(440, 660, 0.4, 'sine', 0.07, 0.15); }
+};
+
+/* =====================================================================
+   TEIL D — DER STERNENHIMMEL (Canvas-Animation)
+   ===================================================================== */
+(function sternenhimmel(){
+  const cv = $('#sternen-canvas');
+  const ctx = cv.getContext('2d');
+  let sterne = [], breite = 0, hoehe = 0, dpr = 1;
+
+  function neuAufbauen(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    breite = cv.clientWidth; hoehe = cv.clientHeight;
+    cv.width = breite * dpr; cv.height = hoehe * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // Anzahl der Sterne hängt von der Bildschirmgröße ab
+    const anzahl = Math.round((breite * hoehe) / 7000);
+    sterne = Array.from({ length: anzahl }, () => ({
+      x: Math.random() * breite,
+      y: Math.random() * hoehe,
+      r: zufall(0.4, 1.6),
+      takt: Math.random() * Math.PI * 2,
+      tempo: zufall(0.4, 1.8),
+      gold: Math.random() < 0.18
+    }));
+  }
+
+  function zeichnen(zeit){
+    ctx.clearRect(0, 0, breite, hoehe);
+    const t = zeit / 1000;
+    for (const s of sterne){
+      // Funkeln: die Helligkeit schwankt sanft hin und her
+      const hell = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * s.tempo + s.takt));
+      ctx.globalAlpha = hell;
+      ctx.fillStyle = s.gold ? '#f0d275' : '#eaf0ff';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+      // Größere Sterne bekommen einen kleinen Lichtkranz
+      if (s.r > 1.2){
+        ctx.globalAlpha = hell * 0.25;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+    if (!wenigBewegung()) requestAnimationFrame(zeichnen);
+  }
+
+  neuAufbauen();
+  window.addEventListener('resize', neuAufbauen);
+  if (wenigBewegung()) zeichnen(0); else requestAnimationFrame(zeichnen);
+})();
+
+/* =====================================================================
+   TEIL E — SCHWEBENDE KERZEN UND DER GOLDENE SCHNATZ
+   ===================================================================== */
+
+/* Baut ein paar Kerzen als SVG und verteilt sie über die Startseite */
+(function kerzenBauen(){
+  const box = $('#kerzen');
+  if (!box || wenigBewegung()) return;
+  const plaetze = [
+    { l: 6,  t: 16 }, { l: 16, t: 40 }, { l: 27, t: 12 },
+    { l: 74, t: 18 }, { l: 85, t: 38 }, { l: 93, t: 14 },
+    { l: 11, t: 66 }, { l: 88, t: 68 }
+  ];
+  box.innerHTML = plaetze.map((p, i) => `
+    <div class="kerze" style="left:${p.l}%; top:${p.t}%;
+         animation-delay:${(i * 0.7).toFixed(1)}s; animation-duration:${(6 + i % 4).toFixed(1)}s;
+         opacity:${0.55 + (i % 3) * 0.15}">
+      <svg viewBox="0 0 26 66" aria-hidden="true">
+        <ellipse cx="13" cy="60" rx="11" ry="4" fill="rgba(240,210,117,.16)"/>
+        <rect x="8" y="22" width="10" height="38" rx="3" fill="#f6efdd"/>
+        <path d="M8 26c3 3 7 3 10 0v6c-3 3-7 3-10 0z" fill="#e3d8bd"/>
+        <rect x="12.4" y="16" width="1.2" height="7" fill="#5b4a2a"/>
+        <g class="flamme" style="animation-delay:${(i * 0.23).toFixed(2)}s">
+          <ellipse cx="13" cy="11" rx="4.6" ry="8" fill="rgba(255,206,92,.45)"/>
+          <ellipse cx="13" cy="12" rx="2.6" ry="5.4" fill="#ffd97a"/>
+          <ellipse cx="13" cy="13.5" rx="1.2" ry="2.6" fill="#fff6d4"/>
+        </g>
+      </svg>
+    </div>`).join('');
+})();
+
+/* Der goldene Schnatz fliegt über den Bildschirm.
+   Ein Klick bringt 5 Punkte für dein Haus. */
+(function schnatzBauen(){
+  if (wenigBewegung()) return;
+  const s = document.createElement('button');
+  s.id = 'schnatz';
+  s.setAttribute('aria-label', 'Goldener Schnatz – fang ihn für 5 Punkte!');
+  s.title = 'Fang mich!';
+  s.innerHTML = `
+    <svg viewBox="0 0 52 32" aria-hidden="true">
+      <path class="fluegel-l" d="M20 16C13 5 5 4 1 9c4 1 6 5 7 8-3 1-5 4-5 7 6 2 13-1 17-8z" fill="rgba(255,246,214,.85)" stroke="#e8d59a" stroke-width=".8"/>
+      <path class="fluegel-r" d="M32 16c7-11 15-12 19-7-4 1-6 5-7 8 3 1 5 4 5 7-6 2-13-1-17-8z" fill="rgba(255,246,214,.85)" stroke="#e8d59a" stroke-width=".8"/>
+      <circle cx="26" cy="16" r="9" fill="#e8bf46"/>
+      <circle cx="26" cy="16" r="9" fill="none" stroke="#8a6a12" stroke-width="1.2"/>
+      <path d="M17.5 16h17M26 7.2v17.6" stroke="#8a6a12" stroke-width="1" opacity=".7"/>
+      <circle cx="22.5" cy="12.5" r="2.6" fill="#fff8dc" opacity=".85"/>
+    </svg>`;
+  document.body.appendChild(s);
+
+  let x = window.innerWidth * 0.2, y = window.innerHeight * 0.4;
+  let zielX = x, zielY = y, pause = 0;
+
+  function neuesZiel(){
+    zielX = zufall(40, Math.max(60, window.innerWidth - 80));
+    zielY = zufall(90, Math.max(140, window.innerHeight - 90));
+    pause = zufall(0, 40);
+  }
+  neuesZiel();
+
+  function fliegen(){
+    if (pause > 0){ pause--; }
+    else {
+      x += (zielX - x) * 0.022;
+      y += (zielY - y) * 0.022;
+      if (Math.hypot(zielX - x, zielY - y) < 26) neuesZiel();
+    }
+    s.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    requestAnimationFrame(fliegen);
+  }
+  s.style.left = '0'; s.style.top = '0';
+  requestAnimationFrame(fliegen);
+
+  s.addEventListener('click', (e) => {
+    KLANG.punkt();
+    punkteGeben(5, e, 'Schnatz gefangen!');
+    // Der Schnatz flitzt sofort woanders hin
+    x = zufall(60, window.innerWidth - 80);
+    y = zufall(90, window.innerHeight - 100);
+    neuesZiel();
+  });
+})();
+
+/* =====================================================================
+   TEIL F — KOPFZEILE: MENÜ, MODUS, TON, SCROLLSPY
+   ===================================================================== */
+
+/* Burger-Menü öffnen und schließen */
+const burger = $('#burger');
+const nav = $('#hauptnavigation');
+burger.addEventListener('click', () => {
+  const offen = burger.getAttribute('aria-expanded') === 'true';
+  burger.setAttribute('aria-expanded', String(!offen));
+  burger.setAttribute('aria-label', offen ? 'Menü öffnen' : 'Menü schließen');
+  nav.classList.toggle('offen', !offen);
+  KLANG.klick();
+});
+/* Nach dem Klick auf einen Link schließt sich das Menü wieder */
+$$('.haupt-nav a').forEach(a => a.addEventListener('click', () => {
+  nav.classList.remove('offen');
+  burger.setAttribute('aria-expanded', 'false');
+}));
+
+/* Ton an/aus. Startzustand ist AUS. */
+const tonKnopf = $('#ton-knopf');
+tonKnopf.addEventListener('click', () => {
+  window.HP.tonAn = !window.HP.tonAn;
+  tonKnopf.setAttribute('aria-pressed', String(window.HP.tonAn));
+  tonKnopf.textContent = window.HP.tonAn ? '🔊' : '🔇';
+  tonKnopf.setAttribute('aria-label', window.HP.tonAn ? 'Ton ausschalten' : 'Ton einschalten');
+  if (window.HP.tonAn){ audioStarten(); KLANG.wechsel(); toastZeigen('Ton ist an. 🔊'); }
+  else toastZeigen('Ton ist aus. 🔇');
+});
+
+/* Lumos (hell) / Nox (dunkel) */
+const modusKnopf = $('#modus-knopf');
+modusKnopf.addEventListener('click', () => {
+  const jetzt = document.documentElement.getAttribute('data-modus');
+  const neu = jetzt === 'nox' ? 'lumos' : 'nox';
+  document.documentElement.setAttribute('data-modus', neu);
+  modusKnopf.textContent = neu === 'nox' ? '💡' : '🌙';
+  modusKnopf.setAttribute('aria-label', neu === 'nox' ? 'Zu Lumos wechseln – heller Modus' : 'Zu Nox wechseln – dunkler Modus');
+  KLANG.wechsel();
+  toastZeigen(neu === 'nox' ? 'Nox! Die Lichter gehen aus. 🌙' : 'Lumos! Es werde hell. 💡');
+});
+
+/* Scrollspy: markiert den Menüpunkt des sichtbaren Abschnitts */
+(function scrollspy(){
+  const links = $$('.haupt-nav a');
+  const ziele = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  if (!('IntersectionObserver' in window)) return;
+  const beobachter = new IntersectionObserver((eintraege) => {
+    eintraege.forEach(e => {
+      if (e.isIntersecting){
+        links.forEach(a => a.removeAttribute('aria-current'));
+        const treffer = links.find(a => a.getAttribute('href') === '#' + e.target.id);
+        if (treffer) treffer.setAttribute('aria-current', 'true');
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  ziele.forEach(z => beobachter.observe(z));
+})();
+
+/* =====================================================================
+   TEIL G — WAPPEN ALS SELBSTGEBAUTES SVG
+   Jedes Wappen besteht aus einem Schild und einem Tier.
+   Alles ist mit einfachen Formen gezeichnet – keine fremden Bilder.
+   ===================================================================== */
+
+/* Erzeugt einen Zackenkranz (z. B. die Mähne des Löwen) */
+function zackenPfad(cx, cy, rAussen, rInnen, zacken){
+  let d = '';
+  for (let i = 0; i < zacken * 2; i++){
+    const r = (i % 2) ? rInnen : rAussen;
+    const a = (Math.PI / zacken) * i - Math.PI / 2;
+    d += (i ? 'L' : 'M') + (cx + Math.cos(a) * r).toFixed(1) + ' ' + (cy + Math.sin(a) * r).toFixed(1) + ' ';
+  }
+  return d + 'Z';
+}
+
+/* Die vier Tiere, jeweils als SVG-Gruppe */
+const TIERE = {
+  gryffindor: () => `
+    <g>
+      <path d="${zackenPfad(50, 55, 28, 18, 15)}" fill="#d3a625" stroke="#8a6a12" stroke-width="1.2"/>
+      <circle cx="38" cy="43" r="6" fill="#e8bf46" stroke="#8a6a12" stroke-width="1"/>
+      <circle cx="62" cy="43" r="6" fill="#e8bf46" stroke="#8a6a12" stroke-width="1"/>
+      <circle cx="50" cy="55" r="17" fill="#f6d98a" stroke="#8a6a12" stroke-width="1.2"/>
+      <circle cx="43.5" cy="51" r="2.4" fill="#3a2a08"/>
+      <circle cx="56.5" cy="51" r="2.4" fill="#3a2a08"/>
+      <path d="M46 59h8l-4 4z" fill="#3a2a08"/>
+      <path d="M50 63v3M50 66c-2.5 3-6 2.5-7.5.5M50 66c2.5 3 6 2.5 7.5.5"
+            stroke="#3a2a08" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <path d="M34 57h-8M34 61h-7M66 57h8M66 61h7" stroke="#8a6a12" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>
+    </g>`,
+
+  hufflepuff: () => `
+    <g>
+      <ellipse cx="33" cy="41" rx="6.5" ry="6" fill="#3a2f28" stroke="#1c1512" stroke-width="1"/>
+      <ellipse cx="67" cy="41" rx="6.5" ry="6" fill="#3a2f28" stroke="#1c1512" stroke-width="1"/>
+      <path d="M50 33c-13 0-22 10-22 25 0 15 10 26 22 26s22-11 22-26c0-15-9-25-22-25z"
+            fill="#3a2f28" stroke="#1c1512" stroke-width="1.2"/>
+      <path d="M50 34c-4 0-6 3-6 7 0 13 2 27 6 41 4-14 6-28 6-41 0-4-2-7-6-7z" fill="#f7f3ec"/>
+      <path d="M31 45c-2 7-2 15 0 22 5-3 8-8 9-14 1-5-2-8-9-8z" fill="#f7f3ec"/>
+      <path d="M69 45c2 7 2 15 0 22-5-3-8-8-9-14-1-5 2-8 9-8z" fill="#f7f3ec"/>
+      <circle cx="40" cy="54" r="2.8" fill="#0f0b09"/>
+      <circle cx="60" cy="54" r="2.8" fill="#0f0b09"/>
+      <circle cx="40.9" cy="53" r=".9" fill="#fff" opacity=".8"/>
+      <circle cx="60.9" cy="53" r=".9" fill="#fff" opacity=".8"/>
+      <ellipse cx="50" cy="72" rx="9" ry="7" fill="#f7f3ec"/>
+      <ellipse cx="50" cy="69" rx="3.6" ry="2.8" fill="#0f0b09"/>
+      <path d="M50 72v3.5M50 75.5c-2.2 2.2-5 1.8-6 0M50 75.5c2.2 2.2 5 1.8 6 0"
+            stroke="#0f0b09" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </g>`,
+
+  ravenclaw: () => {
+    // Ein Flügel wird gezeichnet und für die andere Seite gespiegelt
+    const fluegel = `
+      <polygon points="48,38 38,29 26,24 14,23 8,28 10,34 18,36 14,41 22,42 19,48
+                       27,47 25,54 33,50 32,58 40,52 48,46"/>`;
+    return `
+    <g stroke="#4a3510" stroke-width="1.1" stroke-linejoin="round">
+      <g fill="#c9a05c">${fluegel}</g>
+      <g fill="#c9a05c" transform="translate(100,0) scale(-1,1)">${fluegel}</g>
+      <path d="M50 33c5 10 6 27 3 39l-3 12-3-12c-3-12-2-29 3-39z" fill="#e2bd7d"/>
+      <path d="M44 58h12M45 67h10M46 75h8" stroke="#8a6a2a" stroke-width="1" opacity=".7"/>
+      <circle cx="50" cy="32" r="9" fill="#e8c98f"/>
+      <path d="M57 29l13 4c-2 4-8 5-13 4z" fill="#f0d275"/>
+      <circle cx="52" cy="30" r="2.2" fill="#241a06" stroke="none"/>
+      <circle cx="52.8" cy="29.3" r=".9" fill="#fff" stroke="none" opacity=".85"/>
+    </g>`;
+  },
+
+  slytherin: () => `
+    <g>
+      <path d="M64 32C44 30 38 44 50 51c13 7 10 20-9 21" fill="none"
+            stroke="#2f6b45" stroke-width="9" stroke-linecap="round"/>
+      <path d="M64 32C44 30 38 44 50 51c13 7 10 20-9 21" fill="none"
+            stroke="#aaaaaa" stroke-width="3.4" stroke-linecap="round" opacity=".55"/>
+      <path d="M41 72c-6 .5-9 4-9 8" fill="none" stroke="#2f6b45" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="66" cy="30" r="8.5" fill="#1a472a" stroke="#0d2b18" stroke-width="1"/>
+      <circle cx="69" cy="27.5" r="2.2" fill="#d9e8a0"/>
+      <circle cx="69.5" cy="27.5" r="1" fill="#0d2b18"/>
+      <path d="M74 31l9-2M74 31l8 3" stroke="#c0392b" stroke-width="1.8" stroke-linecap="round"/>
+    </g>`
+};
+
+/* Baut ein komplettes Wappen (Schild + Tier) für ein Haus.
+   Jeder Farbverlauf bekommt eine eigene Nummer, damit es keine
+   doppelten IDs im Dokument gibt. */
+let wappenZaehler = 0;
+function wappenSvg(key, klasse = 'wappen'){
+  const h = HAEUSER[key];
+  const id = `schild-${key}-${++wappenZaehler}`;
+  return `
+  <svg class="${klasse}" viewBox="0 0 100 120" role="img" aria-label="Wappen von ${h.name}: ${h.tier}">
+    <defs>
+      <linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${h.farbe1}"/>
+        <stop offset="100%" stop-color="${h.farbe2}" stop-opacity=".85"/>
+      </linearGradient>
+    </defs>
+    <path d="M50 3 L95 17 V60 c0 30-21 47-45 56 C26 107 5 90 5 60 V17 Z"
+          fill="url(#${id})" stroke="#c9a227" stroke-width="2.5"/>
+    <path d="M50 9 L89 21 V60 c0 26-18 41-39 49 C29 101 11 86 11 60 V21 Z"
+          fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1"/>
+    ${TIERE[key]()}
+    <path d="M22 100c9 7 18 11 28 15 10-4 19-8 28-15" fill="none" stroke="#c9a227" stroke-width="1.6" opacity=".7"/>
+  </svg>`;
+}
+
+/* =====================================================================
+   TEIL H — DIE VIER HAUSKARTEN
+   ===================================================================== */
+function haeuserBauen(){
+  const raster = $('#haus-raster');
+  raster.innerHTML = HAUS_KEYS.map(key => {
+    const h = HAEUSER[key];
+    return `
+    <div class="haus-karte" data-haus="${key}" role="button" tabindex="0"
+         style="--h1:${h.farbe1}; --h2:${h.farbe2}; --hd:${h.farbeDunkel}"
+         aria-label="${h.name}, ${h.tier}. Karte umdrehen für mehr Infos.">
+      <div class="karte-innen">
+        <div class="karte-seite karte-vorne">
+          ${wappenSvg(key)}
+          <h3>${h.name}</h3>
+          <span class="tier">${h.tier} · ${h.element}</span>
+          <span class="karte-hinweis">Antippen zum Umdrehen</span>
+        </div>
+        <div class="karte-seite karte-hinten">
+          <h3>${h.name}</h3>
+          <p style="font-style:italic; color:#6b5620; margin-bottom:.5em">${h.motto}</p>
+          <p>${h.text}</p>
+          <div class="eigenschaften">
+            ${h.eigenschaften.map(e => `<span class="eigenschaft">${e}</span>`).join('')}
+          </div>
+          <p class="liste-titel" style="margin:0">Bekannte Mitglieder</p>
+          <p class="mitglieder">${h.schueler.join(', ')}</p>
+          <p class="liste-titel" style="margin:0">Hausgeist</p>
+          <p class="mitglieder">${h.geist}</p>
+          <button type="button" class="knopf haus-waehlen" data-waehle="${key}">
+            Für ${h.name} sammeln
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  /* Karte per Klick oder Tastatur umdrehen */
+  $$('.haus-karte').forEach(karte => {
+    karte.addEventListener('click', (e) => {
+      // Klick auf "Für ... sammeln" wählt das Haus
+      const wahl = e.target.closest('[data-waehle]');
+      if (wahl){
+        e.stopPropagation();
+        hausSetzen(wahl.dataset.waehle);
+        return;
+      }
+      karte.classList.toggle('gedreht');
+      KLANG.klick();
+    });
+    karte.addEventListener('keydown', (e) => {
+      // Nur reagieren, wenn wirklich die Karte selbst den Fokus hat.
+      // Sonst würde der Knopf auf der Rückseite blockiert.
+      if (e.target !== karte) return;
+      if (e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        karte.classList.toggle('gedreht');
+        KLANG.klick();
+      }
+    });
+  });
+}
+
+/* =====================================================================
+   TEIL I — DAS ZAUBERBUCH
+   ===================================================================== */
+
+/* Sterne für die Schwierigkeit, z. B. ★★☆ */
+function sterneHtml(stufe){
+  let s = '';
+  for (let i = 1; i <= 3; i++) s += i <= stufe ? '★' : '<span class="leer">★</span>';
+  return `<span class="sterne" aria-label="Schwierigkeit ${stufe} von 3">${s}</span>`;
+}
+
+/* Filterknöpfe bauen */
+function filterBauen(){
+  $('#filter-knoepfe').innerHTML = KATEGORIEN.map(k => `
+    <button class="filter-knopf" data-kat="${k}" aria-pressed="${k === 'alle'}">
+      ${k === 'alle' ? 'Alle Zauber' : k}
+    </button>`).join('');
+
+  $$('#filter-knoepfe .filter-knopf').forEach(b => {
+    b.addEventListener('click', () => {
+      window.HP.filter = b.dataset.kat;
+      $$('#filter-knoepfe .filter-knopf').forEach(x =>
+        x.setAttribute('aria-pressed', String(x === b)));
+      KLANG.klick();
+      zauberListeBauen();
+    });
+  });
+}
+
+/* Die Liste der Zaubersprüche neu aufbauen (Suche + Filter) */
+function zauberListeBauen(){
+  const suche = $('#zauber-suche').value.trim().toLowerCase();
+  const kat = window.HP.filter;
+
+  const treffer = ZAUBER.filter(z => {
+    const passtKat = kat === 'alle' || z.kategorie === kat;
+    const passtSuche = !suche ||
+      z.name.toLowerCase().includes(suche) ||
+      z.wirkung.toLowerCase().includes(suche) ||
+      z.kategorie.toLowerCase().includes(suche);
+    return passtKat && passtSuche;
+  });
+
+  const raster = $('#zauber-raster');
+  if (!treffer.length){
+    raster.innerHTML = `<p class="keine-treffer">
+      Kein Zauberspruch gefunden. Probiere es mit einem anderen Wort – oder mit <em>Accio</em>. 🪄</p>`;
+  } else {
+    raster.innerHTML = treffer.map(z => `
+      <button class="zauber-karte" data-name="${sicher(z.name)}">
+        <span class="zn">${sicher(z.name)}</span>
+        <span class="zk">${z.kategorie}</span>
+        ${sterneHtml(z.stufe)}
+      </button>`).join('');
+
+    $$('.zauber-karte', raster).forEach(k => {
+      k.addEventListener('click', () => zauberWirken(k.dataset.name, k));
+    });
+  }
+  $('#zauber-anzahl').textContent =
+    `${treffer.length} von ${ZAUBER.length} Zaubersprüchen`;
+}
+
+/* --- Schreibmaschinen-Effekt ---------------------------------------- */
+let tippTimer = null;
+function schreibmaschine(el, text){
+  clearInterval(tippTimer);
+  if (wenigBewegung()){ el.textContent = text; return; }
+  el.textContent = '';
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  cursor.textContent = '▌';
+  el.appendChild(cursor);
+  let i = 0;
+  tippTimer = setInterval(() => {
+    i++;
+    cursor.remove();
+    el.textContent = text.slice(0, i);
+    if (i < text.length) el.appendChild(cursor);
+    else clearInterval(tippTimer);
+  }, 22);
+}
+
+/* --- Goldene Funken an der Zauberstabspitze -------------------------- */
+const funkenCv = $('#funken-canvas');
+const funkenCtx = funkenCv.getContext('2d');
+let funken = [], funkenLaeuft = false;
+
+function funkenCanvasGroesse(){
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  funkenCv.width = funkenCv.clientWidth * dpr;
+  funkenCv.height = funkenCv.clientHeight * dpr;
+  funkenCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+window.addEventListener('resize', funkenCanvasGroesse);
+
+function funkenSpruehen(){
+  if (wenigBewegung()) return;
+  funkenCanvasGroesse();
+  // Die Spitze des Zauberstabs liegt rechts oben im Canvas
+  const sx = funkenCv.clientWidth * 0.80;
+  const sy = funkenCv.clientHeight * 0.50;
+  for (let i = 0; i < 46; i++){
+    const winkel = zufall(-Math.PI * 0.85, Math.PI * 0.35);
+    const tempo = zufall(1.2, 5.4);
+    funken.push({
+      x: sx, y: sy,
+      vx: Math.cos(winkel) * tempo + 1.2,
+      vy: Math.sin(winkel) * tempo,
+      leben: 1, r: zufall(1, 2.8),
+      farbe: Math.random() < 0.5 ? '#f0d275' : (Math.random() < 0.5 ? '#fff6d4' : '#e8bf46')
+    });
+  }
+  if (!funkenLaeuft){ funkenLaeuft = true; requestAnimationFrame(funkenSchleife); }
+}
+
+function funkenSchleife(){
+  funkenCtx.clearRect(0, 0, funkenCv.clientWidth, funkenCv.clientHeight);
+  funken = funken.filter(f => f.leben > 0);
+  for (const f of funken){
+    f.x += f.vx; f.y += f.vy;
+    f.vy += 0.075;          // ein bisschen Schwerkraft
+    f.vx *= 0.985;
+    f.leben -= 0.018;
+    // Der Radius darf nie negativ werden, sonst meckert das Canvas
+    const radius = Math.max(0.1, f.r * Math.max(0, f.leben));
+    funkenCtx.globalAlpha = Math.max(0, f.leben);
+    funkenCtx.fillStyle = f.farbe;
+    funkenCtx.beginPath();
+    funkenCtx.arc(f.x, f.y, radius, 0, Math.PI * 2);
+    funkenCtx.fill();
+  }
+  funkenCtx.globalAlpha = 1;
+  if (funken.length) requestAnimationFrame(funkenSchleife);
+  else funkenLaeuft = false;
+}
+
+/* --- Einen Zauberspruch wirken --------------------------------------- */
+function zauberWirken(name, knopf){
+  const z = ZAUBER.find(x => x.name === name);
+  if (!z) return;
+
+  $$('.zauber-karte').forEach(k => k.classList.remove('aktiv'));
+  if (knopf) knopf.classList.add('aktiv');
+
+  // Zauberstab zucken lassen
+  const stab = $('#zauberstab');
+  stab.classList.remove('zuck');
+  void stab.offsetWidth;         // Trick, damit die Animation neu startet
+  stab.classList.add('zuck');
+
+  // Licht an der Spitze kurz aufleuchten lassen
+  const licht = $('#stab-licht');
+  licht.style.transition = 'none';
+  licht.style.opacity = '1';
+  setTimeout(() => { licht.style.transition = 'opacity 1.1s ease'; licht.style.opacity = '0'; }, 180);
+
+  setTimeout(funkenSpruehen, 150);
+  KLANG.zauber();
+
+  $('#buehne-meta').innerHTML = `${z.kategorie} · ${sterneHtml(z.stufe)}`;
+  $('#buehne-name').textContent = z.name;
+  schreibmaschine($('#buehne-wirkung'), z.wirkung);
+
+  // Für jeden neu entdeckten Zauber gibt es einen Punkt
+  if (!window.HP.entdeckt) window.HP.entdeckt = [];
+  if (!window.HP.entdeckt.includes(z.name)){
+    window.HP.entdeckt.push(z.name);
+    punkteGeben(2, null, null, true);
+  }
+  window.HP.gesehenerSpruch = z.name;
+}
+</script>
+
+<script>
+/* =====================================================================
+   TEIL J — DER HAUSPOKAL (Punkte, Abzeichen, Konfetti)
+   ===================================================================== */
+
+/* Legt das Haus fest, für das gesammelt wird */
+function hausSetzen(key, stillLeise = false){
+  if (!HAEUSER[key]) return;
+  window.HP.haus = key;
+  const h = HAEUSER[key];
+
+  // Farbe des kleinen Wappens in der Kopfzeile
+  const punkt = $('#wappen-punkt');
+  punkt.style.setProperty('--haus-1', h.farbe1);
+  punkt.style.setProperty('--haus-2', h.farbe2);
+  punkt.textContent = { gryffindor:'🦁', hufflepuff:'🦡', ravenclaw:'🦅', slytherin:'🐍' }[key];
+  $('#punkte-anzeige').setAttribute('aria-label', `Hauspunkte für ${h.name} anzeigen`);
+
+  overlaySchliessen($('#haus-overlay'));
+  if (!stillLeise){
+    KLANG.richtig();
+    toastZeigen(`Du sammelst jetzt für ${h.name}! ${punkt.textContent}`);
+    konfettiStarten(70, [h.farbe1, h.farbe2, '#f0d275']);
+  }
+}
+
+/* Vergibt Punkte, animiert den Zähler und prüft die Abzeichen */
+let zaehlAnimation = null;
+function punkteGeben(anzahl, evt, text, leise){
+  const vorher = window.HP.punkte;
+  window.HP.punkte += anzahl;
+
+  // Zähler langsam hochzählen
+  clearInterval(zaehlAnimation);
+  const feld = $('#punkte-zahl');
+  const start = parseInt(feld.textContent, 10) || 0;
+  const ziel = window.HP.punkte;
+  if (wenigBewegung()){
+    feld.textContent = ziel;
+  } else {
+    const schritte = 22;
+    let i = 0;
+    zaehlAnimation = setInterval(() => {
+      i++;
+      feld.textContent = Math.round(start + (ziel - start) * (i / schritte));
+      if (i >= schritte){ clearInterval(zaehlAnimation); feld.textContent = ziel; }
+    }, 26);
+  }
+
+  const anzeige = $('#punkte-anzeige');
+  anzeige.classList.remove('puls');
+  void anzeige.offsetWidth;
+  anzeige.classList.add('puls');
+
+  // Kleiner "+10"-Flieger dort, wo geklickt wurde
+  if (evt && !wenigBewegung()){
+    const f = document.createElement('div');
+    f.className = 'punkte-floater';
+    f.textContent = '+' + anzahl;
+    f.style.left = (evt.clientX - 12) + 'px';
+    f.style.top = (evt.clientY - 20) + 'px';
+    document.body.appendChild(f);
+    setTimeout(() => f.remove(), 1300);
+  }
+
+  if (text) toastZeigen(`${text} +${anzahl} Punkte!`);
+  if (!leise && !text) KLANG.punkt();
+
+  // Wenn noch kein Haus gewählt ist: freundlich daran erinnern
+  if (!window.HP.haus && vorher === 0){
+    setTimeout(() => toastZeigen('Tipp: Wähle oben ein Haus, dann zählen deine Punkte für dein Team!'), 1800);
+  }
+
+  abzeichenPruefen(vorher);
+}
+
+/* Prüft, ob ein neues Abzeichen freigeschaltet wurde */
+function abzeichenPruefen(vorher){
+  for (const a of ABZEICHEN){
+    if (window.HP.punkte >= a.punkte && vorher < a.punkte && !window.HP.abzeichen.includes(a.id)){
+      window.HP.abzeichen.push(a.id);
+      setTimeout(() => abzeichenZeigen(a), 700);
+      break;
+    }
+  }
+}
+
+function abzeichenZeigen(a){
+  $('#abzeichen-kreis').textContent = a.icon;
+  $('#abzeichen-titel').textContent = a.titel;
+  $('#abzeichen-text').textContent = a.text;
+  overlayOeffnen($('#abzeichen-overlay'));
+  KLANG.fanfare();
+  konfettiStarten(160);
+}
+
+/* --- Konfetti-Regen --------------------------------------------------- */
+const konfettiCv = $('#konfetti-canvas');
+const konfettiCtx = konfettiCv.getContext('2d');
+let konfetti = [], konfettiLaeuft = false;
+
+function konfettiGroesse(){
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  konfettiCv.width = window.innerWidth * dpr;
+  konfettiCv.height = window.innerHeight * dpr;
+  konfettiCv.style.width = window.innerWidth + 'px';
+  konfettiCv.style.height = window.innerHeight + 'px';
+  konfettiCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+window.addEventListener('resize', konfettiGroesse);
+
+function konfettiStarten(anzahl = 120, farben){
+  if (wenigBewegung()) return;
+  konfettiGroesse();
+  const palette = farben || ['#c9a227', '#f0d275', '#7f0909', '#eeb939', '#0e1a40', '#1a472a', '#ffffff'];
+  for (let i = 0; i < anzahl; i++){
+    konfetti.push({
+      x: zufall(0, window.innerWidth),
+      y: zufall(-window.innerHeight * 0.4, -10),
+      b: zufall(5, 11), h: zufall(7, 15),
+      vy: zufall(1.6, 4.4), vx: zufall(-1.4, 1.4),
+      dreh: zufall(0, Math.PI * 2), drehTempo: zufall(-0.16, 0.16),
+      farbe: palette[Math.floor(Math.random() * palette.length)]
+    });
+  }
+  if (!konfettiLaeuft){ konfettiLaeuft = true; requestAnimationFrame(konfettiSchleife); }
+}
+
+function konfettiSchleife(){
+  konfettiCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  konfetti = konfetti.filter(k => k.y < window.innerHeight + 40);
+  for (const k of konfetti){
+    k.x += k.vx; k.y += k.vy; k.dreh += k.drehTempo; k.vx += Math.sin(k.y / 40) * 0.02;
+    konfettiCtx.save();
+    konfettiCtx.translate(k.x, k.y);
+    konfettiCtx.rotate(k.dreh);
+    konfettiCtx.fillStyle = k.farbe;
+    konfettiCtx.fillRect(-k.b / 2, -k.h / 2, k.b, k.h);
+    konfettiCtx.restore();
+  }
+  if (konfetti.length) requestAnimationFrame(konfettiSchleife);
+  else { konfettiLaeuft = false; konfettiCtx.clearRect(0, 0, window.innerWidth, window.innerHeight); }
+}
+
+/* =====================================================================
+   TEIL K — OVERLAYS (Dialoge) mit Tastaturbedienung
+   ===================================================================== */
+let letzterFokus = null;
+
+function overlayOeffnen(ov){
+  letzterFokus = document.activeElement;
+  ov.classList.add('offen');
+  document.body.style.overflow = 'hidden';
+  const ersterKnopf = ov.querySelector('button, [href], input');
+  if (ersterKnopf) setTimeout(() => ersterKnopf.focus(), 60);
+}
+
+function overlaySchliessen(ov){
+  if (!ov || !ov.classList.contains('offen')) return;   // war gar nicht offen
+  ov.classList.remove('offen');
+  if (!$$('.overlay.offen').length) document.body.style.overflow = '';
+  if (letzterFokus && letzterFokus.focus && document.contains(letzterFokus)) letzterFokus.focus();
+}
+
+/* Mit Escape schließen, mit Tab im Dialog bleiben */
+document.addEventListener('keydown', (e) => {
+  const offen = $('.overlay.offen');
+  if (!offen) return;
+  if (e.key === 'Escape'){ overlaySchliessen(offen); return; }
+  if (e.key === 'Tab'){
+    const elemente = $$('button, [href], input, [tabindex]:not([tabindex="-1"])', offen)
+      .filter(el => el.offsetParent !== null);
+    if (!elemente.length) return;
+    const erster = elemente[0], letzter = elemente[elemente.length - 1];
+    if (e.shiftKey && document.activeElement === erster){ e.preventDefault(); letzter.focus(); }
+    else if (!e.shiftKey && document.activeElement === letzter){ e.preventDefault(); erster.focus(); }
+  }
+});
+/* Klick auf den dunklen Hintergrund schließt den Dialog */
+$$('.overlay').forEach(ov => ov.addEventListener('click', (e) => {
+  if (e.target === ov) overlaySchliessen(ov);
+}));
+
+/* --- Hauswahl-Dialog -------------------------------------------------- */
+function hausWahlBauen(){
+  $('#haus-wahl-raster').innerHTML = HAUS_KEYS.map(key => {
+    const h = HAEUSER[key];
+    return `<button class="haus-wahl-knopf" data-haus="${key}"
+              style="--h1:${h.farbe1}; --h2:${h.farbe2}; --hd:${h.farbeDunkel}">
+              ${wappenSvg(key, 'wahl-wappen')}
+              ${h.name}
+            </button>`;
+  }).join('');
+  $$('#haus-wahl-raster .haus-wahl-knopf').forEach(b =>
+    b.addEventListener('click', () => hausSetzen(b.dataset.haus)));
+}
+
+/* --- Punkte-Übersicht ------------------------------------------------- */
+function punkteUebersichtBauen(){
+  const h = window.HP.haus ? HAEUSER[window.HP.haus] : null;
+  $('#punkte-uebersicht').innerHTML = `
+    ${h ? wappenSvg(window.HP.haus, 'wappen') : '<div style="font-size:3rem">✦</div>'}
+    <h3 style="color:${h ? h.farbeDunkel : '#4a3c12'}; margin:.3em 0 0">
+      ${h ? h.name : 'Noch kein Haus gewählt'}</h3>
+    <p style="font-size:2.2rem; font-family:'Cinzel',serif; font-weight:900; color:#5b4a12; margin:.1em 0">
+      ${window.HP.punkte} <span style="font-size:1rem">Punkte</span></p>
+    ${h ? '' : '<p><button class="knopf" id="jetzt-haus-waehlen">Jetzt Haus wählen</button></p>'}
+    <p style="font-size:.9rem">Entdeckte Zaubersprüche: <strong>${(window.HP.entdeckt || []).length}</strong> von ${ZAUBER.length}</p>
+  `;
+  $('#abzeichen-leiste').innerHTML = ABZEICHEN.map(a => `
+    <span class="abzeichen-chip ${window.HP.abzeichen.includes(a.id) ? 'frei' : ''}">
+      ${a.icon} ${a.titel} <span style="opacity:.7">(${a.punkte})</span>
+    </span>`).join('');
+
+  const wahlKnopf = $('#jetzt-haus-waehlen');
+  if (wahlKnopf) wahlKnopf.addEventListener('click', () => {
+    overlaySchliessen($('#punkte-overlay'));
+    setTimeout(() => overlayOeffnen($('#haus-overlay')), 120);
+  });
+}
+
+/* =====================================================================
+   TEIL L — DER SPRECHENDE HUT
+   ===================================================================== */
+
+/* Der Hut als selbstgebautes SVG */
+function hutSvg(wackelt = true){
+  return `
+  <svg class="hut-bild ${wackelt ? 'wackelt' : ''}" viewBox="0 0 120 130" role="img"
+       aria-label="Der Sprechende Hut">
+    <defs>
+      <linearGradient id="hutfarbe" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#7a5c33"/>
+        <stop offset="55%" stop-color="#4e3a20"/>
+        <stop offset="100%" stop-color="#2e2213"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="60" cy="118" rx="52" ry="9" fill="rgba(0,0,0,.18)"/>
+    <path d="M60 6c-6 10-2 22-10 34-7 11-20 22-24 40-3 14 6 26 34 26s37-12 34-26c-4-18-17-29-24-40C62 28 66 16 60 6z"
+          fill="url(#hutfarbe)"/>
+    <path d="M12 108c8-10 26-14 48-14s40 4 48 14c-8 10-26 14-48 14s-40-4-48-14z" fill="#3d2d19"/>
+    <path d="M34 66c10 5 42 5 52 0-2 6-4 9-4 9-14 5-30 5-44 0 0 0-2-3-4-9z" fill="#2a1f11" opacity=".6"/>
+    <path d="M38 60c4-3 9-2 11 1-4 2-8 2-11-1z" fill="#1c150b"/>
+    <path d="M82 58c-4-3-9-2-11 1 4 2 8 2 11-1z" fill="#1c150b"/>
+    <ellipse class="hut-mund" cx="60" cy="86" rx="15" ry="7" fill="#1c150b"/>
+    <path d="M40 80c12-4 28-4 40 0" fill="none" stroke="#6b5230" stroke-width="1.6" opacity=".7"/>
+  </svg>`;
+}
+
+/* Zeigt die aktuelle Frage oder das Ergebnis */
+function hutBauen(){
+  const box = $('#hut-box');
+
+  /* Startbildschirm */
+  if (window.HP.hutFrage === 0 && !window.HP.hutFertig){
+    box.innerHTML = `
+      ${hutSvg()}
+      <p class="hut-zaehler">Setz mich auf …</p>
+      <h3 style="text-align:center; color:#4a3c12">Ich lese in deinen Gedanken!</h3>
+      <p style="text-align:center; max-width:52ch; margin-inline:auto">
+        Zehn Fragen, ganz ehrlich beantwortet. Dann weiß ich, wohin du gehörst.
+        Keine Sorge – falsch antworten kannst du hier nicht.</p>
+      <p style="text-align:center"><button class="knopf" id="hut-start">🎩 Test starten</button></p>`;
+    $('#hut-start').addEventListener('click', () => {
+      KLANG.hut();
+      window.HP.hutFrage = 1;
+      hutBauen();
+      $('#hut-box').scrollIntoView({ behavior: wenigBewegung() ? 'auto' : 'smooth', block: 'center' });
+    });
+    return;
+  }
+
+  /* Ergebnis */
+  if (window.HP.hutFertig){ hutErgebnisZeigen(); return; }
+
+  /* Frage anzeigen */
+  const nr = window.HP.hutFrage;
+  const f = HUT_FRAGEN[nr - 1];
+  const prozent = Math.round(((nr - 1) / HUT_FRAGEN.length) * 100);
+  const buchstaben = ['A', 'B', 'C', 'D'];
+
+  box.innerHTML = `
+    ${hutSvg()}
+    <div class="hut-fortschritt" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+         aria-valuenow="${prozent}" aria-label="Fortschritt im Test">
+      <i style="width:${prozent}%"></i>
+    </div>
+    <p class="hut-zaehler">Frage ${nr} von ${HUT_FRAGEN.length}</p>
+    <h3 class="hut-frage">${f.frage}</h3>
+    <div class="hut-antworten" role="group" aria-label="Antwortmöglichkeiten">
+      ${f.antworten.map((a, i) => `
+        <button class="hut-antwort" data-i="${i}">
+          <span class="buchstabe" aria-hidden="true">${buchstaben[i]}</span>${a.text}
+        </button>`).join('')}
+    </div>
+    ${nr > 1 ? `<p style="text-align:center; margin-top:14px">
+      <button class="filter-knopf" id="hut-zurueck">← Eine Frage zurück</button></p>` : ''}`;
+
+  $$('.hut-antwort', box).forEach(b => {
+    b.addEventListener('click', (e) => {
+      const w = f.antworten[+b.dataset.i].w;
+      HAUS_KEYS.forEach((k, i) => { window.HP.hutPunkte[k] += w[i]; });
+      KLANG.klick();
+      punkteGeben(3, e, null, true);
+      if (nr < HUT_FRAGEN.length){ window.HP.hutFrage++; hutBauen(); }
+      else { window.HP.hutFertig = true; hutBauen(); }
+    });
+  });
+
+  const zurueck = $('#hut-zurueck');
+  if (zurueck) zurueck.addEventListener('click', () => {
+    // Die Punkte der letzten Antwort lassen wir stehen – das ist ok für einen Spaßtest
+    window.HP.hutFrage--;
+    hutBauen();
+  });
+}
+
+/* Das Ergebnis des Hutes mit Balkenanzeige */
+function hutErgebnisZeigen(){
+  const p = window.HP.hutPunkte;
+  const gesamt = Math.max(1, HAUS_KEYS.reduce((s, k) => s + p[k], 0));
+  const sieger = HAUS_KEYS.slice().sort((a, b) => p[b] - p[a])[0];
+  const h = HAEUSER[sieger];
+
+  $('#hut-box').innerHTML = `
+    <div class="hut-ergebnis" style="--h1:${h.farbe1}; --hd:${h.farbeDunkel}">
+      ${wappenSvg(sieger, 'ergebnis-wappen')}
+      <p class="ruf">Der Hut ruft laut …</p>
+      <h3>${h.name}!</h3>
+      <p style="max-width:54ch; margin-inline:auto">${h.motto} ${h.text}</p>
+      <div class="balken-liste" aria-label="Verteilung deiner Antworten">
+        ${HAUS_KEYS.map(k => `
+          <div class="balken-zeile">
+            <span>${HAEUSER[k].name}</span>
+            <span class="balken"><i data-breite="${Math.round((p[k] / gesamt) * 100)}"
+                  style="background:linear-gradient(90deg, ${HAEUSER[k].farbe1}, ${HAEUSER[k].farbe2})"></i></span>
+            <span>${Math.round((p[k] / gesamt) * 100)}%</span>
+          </div>`).join('')}
+      </div>
+      <p style="margin-top:20px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
+        <button class="knopf" id="hut-uebernehmen">Für ${h.name} sammeln</button>
+        <button class="knopf knopf--geist" id="hut-nochmal">Nochmal versuchen</button>
+      </p>
+    </div>`;
+
+  // Balken langsam wachsen lassen
+  setTimeout(() => {
+    $$('.balken i').forEach(b => { b.style.width = b.dataset.breite + '%'; });
+  }, 120);
+
+  KLANG.fanfare();
+  konfettiStarten(140, [h.farbe1, h.farbe2, '#f0d275']);
+  punkteGeben(20, null, 'Test geschafft!');
+
+  $('#hut-uebernehmen').addEventListener('click', () => hausSetzen(sieger));
+  $('#hut-nochmal').addEventListener('click', () => {
+    window.HP.hutFrage = 0;
+    window.HP.hutFertig = false;
+    HAUS_KEYS.forEach(k => window.HP.hutPunkte[k] = 0);
+    hutBauen();
+  });
+}
+
+/* =====================================================================
+   TEIL M — KACHELN UND WISSENSKARTEN
+   ===================================================================== */
+
+/* Baut eine Platzhalter-Kachel */
+function kachelHtml(k){
+  return `
+    <article class="kachel">
+      <span class="kachel-icon" aria-hidden="true">${k.icon}</span>
+      <h3>${k.titel}</h3>
+      <p>${k.text}</p>
+      <p class="platzhalter-hinweis">${k.hinweis}</p>
+      <span class="bald">Kommt bald</span>
+    </article>`;
+}
+
+function kachelnBauen(){
+  $('#spiele-raster').innerHTML = SPIELE.map(kachelHtml).join('');
+  $('#quiz-raster').innerHTML   = QUIZZE.map(kachelHtml).join('');
+  $('#tests-raster').innerHTML  = TESTS_EXTRA.map(kachelHtml).join('');
+
+  $('#wissen-raster').innerHTML = WISSEN.map(w => `
+    <article class="wissen-karte pergament">
+      <span class="wk-icon" aria-hidden="true">${w.icon}</span>
+      <h3>${w.titel}</h3>
+      <p>${w.text}</p>
+      <p class="wusstest-du">${w.tipp}</p>
+    </article>`).join('');
+}
+
+/* =====================================================================
+   TEIL N — ALLES STARTEN
+   ===================================================================== */
+function seiteStarten(){
+  haeuserBauen();
+  filterBauen();
+  zauberListeBauen();
+  hausWahlBauen();
+  hutBauen();
+  kachelnBauen();
+  funkenCanvasGroesse();
+  konfettiGroesse();
+
+  // Live-Suche im Zauberbuch
+  $('#zauber-suche').addEventListener('input', zauberListeBauen);
+
+  // Knopf "Welches Haus bist du?" auf der Startseite
+  $('#hero-hut-knopf').addEventListener('click', () => {
+    KLANG.klick();
+    $('#tests').scrollIntoView({ behavior: wenigBewegung() ? 'auto' : 'smooth' });
+  });
+  $('#betritt-knopf').addEventListener('click', () => KLANG.wechsel());
+
+  // Punkteanzeige öffnet die Übersicht
+  $('#punkte-anzeige').addEventListener('click', () => {
+    punkteUebersichtBauen();
+    overlayOeffnen($('#punkte-overlay'));
+    KLANG.klick();
+  });
+  $('#punkte-schliessen').addEventListener('click', () => overlaySchliessen($('#punkte-overlay')));
+  $('#abzeichen-schliessen').addEventListener('click', () => overlaySchliessen($('#abzeichen-overlay')));
+
+  // Dialog der Hauswahl
+  $('#spaeter-knopf').addEventListener('click', () => {
+    overlaySchliessen($('#haus-overlay'));
+    toastZeigen('Alles klar! Du kannst dein Haus jederzeit oben rechts wählen.');
+  });
+  $('#zum-hut-knopf').addEventListener('click', () => {
+    overlaySchliessen($('#haus-overlay'));
+    setTimeout(() => {
+      $('#tests').scrollIntoView({ behavior: wenigBewegung() ? 'auto' : 'smooth' });
+    }, 150);
+  });
+
+  // Beim ersten Besuch nach kurzer Zeit nach dem Haus fragen
+  setTimeout(() => {
+    if (!window.HP.haus) overlayOeffnen($('#haus-overlay'));
+  }, 1400);
+
+  console.log('%c🪄 Willkommen in der Welt der Magie!', 'color:#c9a227; font-size:16px; font-weight:bold');
+  console.log('Tipp für Schülerinnen und Schüler: Alle Inhalte stehen oben im Abschnitt "TEIL A — DATEN".');
+}
+
+/* Los geht's, sobald die Seite geladen ist */
+if (document.readyState === 'loading')
+  document.addEventListener('DOMContentLoaded', seiteStarten);
+else seiteStarten();
+</script>
+
+</body>
+</html>
