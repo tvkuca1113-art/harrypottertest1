@@ -700,6 +700,205 @@ html[data-modus="lumos"] .fusszeile{ background:rgba(255,250,240,.6); }
   .icon-knopf{ width:36px; height:36px; font-size:.95rem; }
 }
 
+
+/* --- 16. Mini-Spiele -------------------------------------------------- */
+/* Rahmen: alle Spiele laufen im selben Dialogfenster */
+.spiel-box{ width:min(880px, 100%); text-align:left; }
+.spiel-kopf{
+  display:flex; align-items:center; gap:12px; justify-content:space-between;
+  border-bottom:1px dashed rgba(120,92,20,.4); padding-bottom:10px; margin-bottom:12px;
+}
+.spiel-kopf h2{ margin:0; font-size:clamp(1.1rem,.9rem+1.2vw,1.6rem); color:#4a3c12; text-align:left; }
+.spiel-schliessen{
+  width:38px; height:38px; flex:none; border-radius:50%; cursor:pointer; font-size:1.1rem;
+  background:rgba(120,92,20,.12); border:1px solid rgba(120,92,20,.4); color:#4a3c12;
+}
+.spiel-schliessen:hover{ background:rgba(120,92,20,.25); }
+
+.spiel-hud{
+  display:flex; gap:8px 18px; flex-wrap:wrap; justify-content:center;
+  font-family:'Cinzel',serif; font-weight:700; font-size:.86rem; color:#6b5620;
+  margin-bottom:14px;
+}
+.spiel-hud b{ color:#7f0909; font-size:1rem; }
+.spiel-bereich{ min-height:250px; }
+.spiel-hinweis{ text-align:center; font-size:.86rem; color:#6b5620; margin:12px 0 0; }
+.spiel-fuss{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
+
+/* Start- und Endbildschirm eines Spiels */
+.spiel-tafel{ text-align:center; padding:14px 0; }
+.spiel-tafel .gross{ font-size:3rem; line-height:1; }
+.spiel-tafel h3{ color:#4a3c12; margin:8px 0 4px; }
+.spiel-tafel p{ color:#5b4a12; max-width:46ch; margin-inline:auto; }
+
+/* Spielkachel mit Startknopf */
+.kachel--spiel{ border-style:solid; }
+.kachel--spiel .spiel-start{ margin-top:auto; align-self:stretch; font-size:.86rem; padding:.55em 1em; }
+.kachel .bestwert{
+  position:absolute; top:12px; right:12px; font-size:.72rem; font-weight:700;
+  padding:3px 9px; border-radius:999px; background:rgba(201,162,39,.18);
+  color:var(--akzent); border:1px solid var(--rand);
+}
+
+/* --- Memory ---------------------------------------------------------- */
+.memory-raster{
+  display:grid; grid-template-columns:repeat(4, 1fr); gap:10px;
+  max-width:420px; margin-inline:auto;
+}
+.mem-karte{ aspect-ratio:1; perspective:700px; background:none; border:0; padding:0; cursor:pointer; }
+.mem-innen{ position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .45s ease; }
+.mem-karte.offen .mem-innen, .mem-karte.gefunden .mem-innen{ transform:rotateY(180deg); }
+.mem-seite{
+  position:absolute; inset:0; backface-visibility:hidden; border-radius:12px;
+  display:grid; place-items:center; border:1px solid rgba(120,92,20,.4);
+}
+.mem-vorne{ background:linear-gradient(150deg,#243372,#0d1330); color:#f0d275; font-size:1.5rem; }
+.mem-hinten{ transform:rotateY(180deg); background:#fffaf0; font-size:2.1rem; }
+.mem-karte.gefunden{ opacity:.5; cursor:default; }
+.mem-karte.gefunden .mem-hinten{ background:#cdecd6; }
+
+/* --- Zauberspruch-Duell ---------------------------------------------- */
+.duell-szene{ text-align:center; margin-bottom:6px; }
+.duell-lage{ font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:#5b4a12; margin:0; }
+.duell-spruch{
+  font-family:'Cinzel',serif; font-weight:900; color:#7f0909; margin:2px 0 6px;
+  font-size:clamp(1.3rem, 1rem + 2.2vw, 2.1rem);
+}
+.duell-zeit{ height:10px; border-radius:999px; background:rgba(90,70,20,.18); overflow:hidden; max-width:420px; margin:0 auto 16px; }
+.duell-zeit i{ display:block; height:100%; width:100%; background:linear-gradient(90deg,#7f0909,#eeb939); transition:width .1s linear; }
+.duell-optionen{ display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:10px; max-width:540px; margin-inline:auto; }
+.duell-opt{
+  font-family:'Cinzel',serif; font-weight:700; font-size:.95rem; cursor:pointer;
+  padding:.8em .6em; border-radius:12px; color:var(--tinte);
+  background:rgba(255,255,255,.6); border:1px solid rgba(120,92,20,.35);
+  transition:transform .15s ease, background .15s ease;
+}
+.duell-opt:hover{ background:#fff; transform:translateY(-2px); }
+.duell-opt.richtig{ background:#bfe6c8; border-color:#2f8a4a; }
+.duell-opt.falsch{ background:#f4c7c7; border-color:#a33b3b; }
+.herzen{ letter-spacing:3px; }
+
+/* --- Fang den Schnatz ------------------------------------------------- */
+.schnatz-feld{
+  position:relative; height:min(340px, 52svh); border-radius:16px; overflow:hidden;
+  background:radial-gradient(90% 70% at 50% 20%, #22306e, #0c1230 80%);
+  border:1px solid rgba(201,162,39,.4); touch-action:manipulation;
+}
+.flug-objekt{
+  position:absolute; width:54px; height:54px; border:0; background:transparent; padding:0;
+  cursor:pointer; display:grid; place-items:center;
+  animation:objekt-rein .25s ease-out;
+}
+@keyframes objekt-rein{ from{ transform:scale(.3); opacity:0; } }
+.flug-objekt svg{ width:100%; height:100%; filter:drop-shadow(0 0 8px rgba(240,210,117,.7)); }
+.flug-objekt.klatscher svg{ filter:drop-shadow(0 0 8px rgba(255,90,90,.6)); }
+.schnatz-feld.getroffen{ animation:ruettel .3s ease; }
+@keyframes ruettel{ 25%{ transform:translateX(-6px); } 75%{ transform:translateX(6px); } }
+
+/* --- Zaubertrank brauen ----------------------------------------------- */
+.trank-buehne{ display:flex; flex-direction:column; align-items:center; gap:12px; }
+.kessel{ width:150px; }
+.kessel .blubber{ animation:blubbern 2.4s ease-in-out infinite; transform-origin:50% 100%; }
+@keyframes blubbern{ 0%,100%{ transform:translateY(0) scale(1); opacity:.85; } 50%{ transform:translateY(-8px) scale(1.1); opacity:.35; } }
+.rezept{
+  display:flex; gap:8px; flex-wrap:wrap; justify-content:center; min-height:58px;
+  padding:10px 14px; border-radius:14px; background:rgba(255,255,255,.55);
+  border:1px dashed rgba(120,92,20,.45); max-width:520px;
+}
+.rezept .schritt{ font-size:1.7rem; }
+.rezept .schritt.getan{ opacity:.35; }
+.rezept.verdeckt{ color:#6b5620; font-style:italic; align-items:center; }
+.zutaten-raster{ display:grid; grid-template-columns:repeat(auto-fit, minmax(74px,1fr)); gap:10px; max-width:520px; width:100%; }
+.zutat{
+  cursor:pointer; padding:10px 6px; border-radius:12px; font-size:1.7rem;
+  background:rgba(255,255,255,.6); border:1px solid rgba(120,92,20,.35);
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+  transition:transform .15s ease, background .15s ease;
+}
+.zutat small{ font-size:.68rem; font-family:'Lato',sans-serif; color:#5b4a12; }
+.zutat:hover{ background:#fff; transform:translateY(-3px); }
+.zutat.richtig{ background:#bfe6c8; }
+.zutat.falsch{ background:#f4c7c7; }
+
+/* --- Wortsuche --------------------------------------------------------- */
+.wort-gitter{ display:grid; gap:3px; max-width:430px; margin:0 auto 14px; }
+.wort-zelle{
+  aspect-ratio:1; padding:0; cursor:pointer; border-radius:6px;
+  font-family:'Cinzel',serif; font-weight:700; color:#3a2e10;
+  font-size:clamp(.6rem, 2.2vw, .95rem);
+  background:#fffaf0; border:1px solid rgba(120,92,20,.22);
+}
+.wort-zelle:hover{ background:#f7e9c8; }
+.wort-zelle.start{ background:#f0d275; box-shadow:0 0 0 2px #c9a227 inset; }
+.wort-zelle.gefunden{ background:#bfe6c8; border-color:#2f8a4a; }
+.wort-liste{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+.wort-liste span{
+  font-family:'Cinzel',serif; font-size:.8rem; font-weight:700; color:#5b4a12;
+  padding:3px 10px; border-radius:999px; background:rgba(255,255,255,.55);
+  border:1px solid rgba(120,92,20,.3);
+}
+.wort-liste span.weg{ text-decoration:line-through; opacity:.45; background:#cdecd6; }
+
+/* --- Licht im Labyrinth ------------------------------------------------ */
+.lab-feld{
+  display:grid; gap:1px; margin:0 auto; width:min(360px, 82vw);
+  background:#1a1a2e; padding:5px; border-radius:12px; border:1px solid rgba(201,162,39,.4);
+}
+.lab-zelle{ aspect-ratio:1; border-radius:2px; display:grid; place-items:center; font-size:.8rem; }
+.lab-wand{ background:#5c5a6b; }
+.lab-weg{ background:#1b2a63; }
+.lab-zelle.dunkel{ background:#0a0b1c; color:transparent; }
+.lab-zelle.halb{ opacity:.45; }
+.lab-spieler{ background:radial-gradient(circle, #fff6cf, #f0d275 60%, #c9a227); box-shadow:0 0 12px 4px rgba(240,210,117,.55); }
+.lab-ziel{ background:#2f8a4a; }
+.lab-steuerung{ display:grid; grid-template-columns:repeat(3, 54px); gap:6px; justify-content:center; margin-top:14px; }
+.lab-steuerung button{
+  height:48px; border-radius:12px; cursor:pointer; font-size:1.1rem;
+  background:rgba(255,255,255,.6); border:1px solid rgba(120,92,20,.4); color:#4a3c12;
+}
+.lab-steuerung button:hover{ background:#fff; }
+.lab-steuerung .leer{ visibility:hidden; }
+
+@media (max-width: 560px){
+  .memory-raster{ gap:7px; }
+  .mem-vorne{ font-size:1.2rem; }
+  .mem-hinten{ font-size:1.7rem; }
+  .duell-opt{ font-size:.86rem; }
+  .spiel-hud{ font-size:.78rem; }
+}
+
+/* --- 17. Quiz und Tests im Dialog ------------------------------------- */
+.quiz-antwort{ transition:background .18s ease, border-color .18s ease, transform .18s ease; }
+.quiz-antwort.richtig{ background:#bfe6c8 !important; border-color:#2f8a4a !important; }
+.quiz-antwort.falsch{ background:#f4c7c7 !important; border-color:#a33b3b !important; }
+.quiz-antwort[disabled]{ cursor:default; transform:none; }
+.quiz-erklaerung{
+  margin-top:14px; padding:12px 14px; border-radius:12px; font-size:.9rem; color:#4a3c12;
+  background:rgba(255,255,255,.6); border-left:4px solid var(--gold);
+  animation:erkl-rein .3s ease;
+}
+@keyframes erkl-rein{ from{ opacity:0; transform:translateY(-6px); } }
+
+.test-ergebnis{ text-align:center; }
+.test-ergebnis .ergebnis-icon{
+  font-size:3.6rem; line-height:1; display:block; margin-bottom:4px;
+  animation:ergebnis-rein .7s cubic-bezier(.2,.9,.3,1.4);
+}
+.test-ergebnis h3{ color:#4a3c12; font-size:clamp(1.4rem,1.1rem+2vw,2.2rem); margin:0 0 6px; }
+.test-ergebnis .unterzeile{ font-family:'Cormorant Garamond',serif; font-style:italic; color:#8a7331; margin:0 0 10px; }
+
+/* Ergebnis des Zauberstab-Tests */
+.stab-ergebnis{ text-align:center; }
+.stab-bild{ width:min(360px,90%); margin:6px auto 10px; display:block; }
+.stab-daten{ display:grid; gap:8px; max-width:420px; margin:14px auto 0; text-align:left; }
+.stab-zeile{
+  display:grid; grid-template-columns:96px 1fr; gap:10px; align-items:baseline;
+  padding:8px 12px; border-radius:10px; background:rgba(255,255,255,.55);
+  border:1px solid rgba(120,92,20,.3); font-size:.9rem; color:#4a3c12;
+}
+.stab-zeile b{ font-family:'Cinzel',serif; font-size:.76rem; letter-spacing:.08em;
+  text-transform:uppercase; color:#8a7331; }
+
 /* --- 15. Bewegung reduzieren ----------------------------------------- */
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{
@@ -868,7 +1067,8 @@ html[data-modus="lumos"] .fusszeile{ background:rgba(255,250,240,.6); }
     <div class="abschnitt-kopf">
       <h2 id="spiele-titel">Magische Spiele</h2>
       <div class="zierlinie" aria-hidden="true"><span>✦</span></div>
-      <p>Hier entstehen die Mini-Spiele. Jedes gewonnene Spiel bringt Punkte für dein Haus.</p>
+      <p>Sechs Mini-Spiele warten auf dich – vom Memory bis zum Labyrinth.
+         Jedes gewonnene Spiel bringt Punkte für dein Haus.</p>
     </div>
     <div class="kachel-raster" id="spiele-raster"></div>
   </div>
@@ -878,16 +1078,18 @@ html[data-modus="lumos"] .fusszeile{ background:rgba(255,250,240,.6); }
 <section id="tests" aria-labelledby="tests-titel">
   <div class="behaelter">
     <div class="abschnitt-kopf">
-      <h2 id="tests-titel">Der Sprechende Hut</h2>
+      <h2 id="tests-titel">Die großen Tests</h2>
       <div class="zierlinie" aria-hidden="true"><span>✦</span></div>
-      <p>Zehn Fragen, ein Ergebnis: In welches Haus gehörst du wirklich?</p>
+      <p>Zuerst der Sprechende Hut: Zehn Fragen, ein Ergebnis –
+         in welches Haus gehörst du wirklich?</p>
     </div>
 
     <div class="hut-box pergament" id="hut-box">
       <!-- Inhalt wird von JavaScript gefüllt -->
     </div>
 
-    <div class="kachel-raster" id="tests-raster" style="margin-top:26px"></div>
+    <h3 style="text-align:center; color:var(--akzent); margin:44px 0 18px">Und noch mehr über dich</h3>
+    <div class="kachel-raster" id="tests-raster"></div>
   </div>
 </section>
 
@@ -897,7 +1099,8 @@ html[data-modus="lumos"] .fusszeile{ background:rgba(255,250,240,.6); }
     <div class="abschnitt-kopf">
       <h2 id="quiz-titel">Das große Wissensquiz</h2>
       <div class="zierlinie" aria-hidden="true"><span>✦</span></div>
-      <p>Drei Schwierigkeitsstufen – vom Erstklässler bis zur Schulsprecherin.</p>
+      <p>Drei Schwierigkeitsstufen – vom Erstklässler bis zur Schulsprecherin.
+         Jede richtige Antwort bringt Punkte für dein Haus.</p>
     </div>
     <div class="kachel-raster" id="quiz-raster"></div>
   </div>
@@ -964,6 +1167,19 @@ html[data-modus="lumos"] .fusszeile{ background:rgba(255,250,240,.6); }
     <h2 id="abzeichen-titel">Erstklässler</h2>
     <p id="abzeichen-text">Du hast 100 Punkte gesammelt. Weiter so!</p>
     <button class="knopf" id="abzeichen-schliessen">Juhu, danke!</button>
+  </div>
+</div>
+
+<!-- ============ OVERLAY: SPIELE, QUIZ UND TESTS ============ -->
+<div class="overlay" id="spiel-overlay" role="dialog" aria-modal="true" aria-labelledby="spiel-titel">
+  <div class="overlay-box pergament spiel-box">
+    <div class="spiel-kopf">
+      <h2 id="spiel-titel">Spiel</h2>
+      <button type="button" class="spiel-schliessen" id="spiel-schliessen" aria-label="Fenster schließen">✕</button>
+    </div>
+    <div class="spiel-hud" id="spiel-hud" aria-live="polite"></div>
+    <div class="spiel-bereich" id="spiel-bereich"></div>
+    <div class="spiel-fuss" id="spiel-fuss"></div>
   </div>
 </div>
 
@@ -1157,28 +1373,28 @@ const HUT_FRAGEN = [
   ]}
 ];
 
-/* --- Platzhalter-Kacheln für Spiele --------------------------------- */
+/* --- Die sechs Mini-Spiele ------------------------------------------ */
 const SPIELE = [
-  { icon:'🃏', titel:'Magisches Memory',      text:'Finde die Paare aus magischen Geschöpfen, bevor die Zeit abläuft.',   hinweis:'Platzhalter – Spiellogik folgt.' },
-  { icon:'⚔️', titel:'Zauberspruch-Duell',    text:'Reagiere blitzschnell und wähle den richtigen Gegenzauber.',          hinweis:'Platzhalter – Spiellogik folgt.' },
-  { icon:'🏆', titel:'Fang den Schnatz',      text:'Klicke den goldenen Schnatz, so oft du kannst, bevor er entwischt.',  hinweis:'Platzhalter – Spiellogik folgt.' },
-  { icon:'🧪', titel:'Zaubertrank brauen',    text:'Gib die Zutaten in der richtigen Reihenfolge in den Kessel.',         hinweis:'Platzhalter – Spiellogik folgt.' },
-  { icon:'🔤', titel:'Wortsuche der Zauber',  text:'Finde versteckte Zauberformeln im Buchstabengitter.',                 hinweis:'Platzhalter – Spiellogik folgt.' },
-  { icon:'🕯️', titel:'Licht im Labyrinth',    text:'Führe dein Lumos-Licht mit den Pfeiltasten durch das Schlossgewölbe.', hinweis:'Platzhalter – Spiellogik folgt.' }
+  { id:'memory',    icon:'🃏', titel:'Magisches Memory',   text:'Finde die sechs Paare magischer Geschöpfe – mit möglichst wenigen Zügen.', knopf:'Spielen' },
+  { id:'duell',     icon:'⚔️', titel:'Zauberspruch-Duell', text:'Zehn Runden, sieben Sekunden pro Zug: Wähle blitzschnell den richtigen Gegenzauber.', knopf:'Duellieren' },
+  { id:'schnatz',   icon:'🏆', titel:'Fang den Schnatz',   text:'Dreißig Sekunden lang Schnatze fangen – und den Klatschern ausweichen.', knopf:'Losfliegen' },
+  { id:'trank',     icon:'🧪', titel:'Zaubertrank brauen', text:'Merk dir das Rezept und gib die Zutaten in der richtigen Reihenfolge in den Kessel.', knopf:'Brauen' },
+  { id:'wortsuche', icon:'🔤', titel:'Wortsuche der Zauber', text:'Sechs Zauberformeln verstecken sich im Buchstabengitter. Findest du alle?', knopf:'Suchen' },
+  { id:'labyrinth', icon:'🕯️', titel:'Licht im Labyrinth', text:'Dein Lumos leuchtet nur ein paar Felder weit. Sammle Kerzen und finde den Ausgang.', knopf:'Betreten' }
 ];
 
-/* --- Platzhalter-Kacheln für die Quizze ------------------------------ */
+/* --- Die drei Quiz-Stufen -------------------------------------------- */
 const QUIZZE = [
-  { icon:'🌱', titel:'Stufe 1 · Erstklässler',   text:'Zehn leichte Fragen für alle, die gerade erst angekommen sind.', hinweis:'Platzhalter – Fragen folgen.' },
-  { icon:'📜', titel:'Stufe 2 · ZAG-Prüfung',    text:'Zehn mittelschwere Fragen für erfahrene Schülerinnen und Schüler.', hinweis:'Platzhalter – Fragen folgen.' },
-  { icon:'🦉', titel:'Stufe 3 · UTZ-Prüfung',    text:'Zehn knifflige Fragen für echte Kenner der magischen Welt.',      hinweis:'Platzhalter – Fragen folgen.' }
+  { id:'leicht', icon:'🌱', titel:'Stufe 1 · Erstklässler', text:'Zehn leichte Fragen für alle, die gerade erst in Hogwarts angekommen sind.', knopf:'Quiz starten' },
+  { id:'mittel', icon:'📜', titel:'Stufe 2 · ZAG-Prüfung',  text:'Zehn mittelschwere Fragen für erfahrene Schülerinnen und Schüler.', knopf:'Quiz starten' },
+  { id:'schwer', icon:'🦉', titel:'Stufe 3 · UTZ-Prüfung',  text:'Zehn knifflige Fragen für echte Kennerinnen und Kenner der magischen Welt.', knopf:'Quiz starten' }
 ];
 
-/* --- Platzhalter für den zweiten Test -------------------------------- */
+/* --- Die drei weiteren Tests ------------------------------------------ */
 const TESTS_EXTRA = [
-  { icon:'🧙', titel:'Welcher Charakter bist du?', text:'Zwölf Fragen verraten dir, welcher Figur du am ähnlichsten bist.', hinweis:'Platzhalter – Fragen folgen.' },
-  { icon:'🦌', titel:'Was ist dein Patronus?',     text:'Finde heraus, welches Schutztier aus deinem Zauberstab tritt.',    hinweis:'Platzhalter – Fragen folgen.' },
-  { icon:'🪄', titel:'Welcher Zauberstab passt?',  text:'Holz, Kern und Länge – dein persönlicher Zauberstab wartet.',      hinweis:'Platzhalter – Fragen folgen.' }
+  { id:'charakter',  icon:'🧙', titel:'Welcher Charakter bist du?', text:'Zwölf Fragen verraten dir, welcher Figur du am ähnlichsten bist.', knopf:'Test starten' },
+  { id:'patronus',   icon:'🦌', titel:'Was ist dein Patronus?',     text:'Zehn Fragen – dann tritt dein Schutztier aus dem Zauberstab.', knopf:'Test starten' },
+  { id:'zauberstab', icon:'🪄', titel:'Welcher Zauberstab passt?',  text:'Holz, Kern und Länge: Bei Ollivander sucht der Stab sich dich aus.', knopf:'Test starten' }
 ];
 
 /* --- Wissenskarten ---------------------------------------------------- */
@@ -1209,6 +1425,319 @@ const ABZEICHEN = [
   { id:'vertrauensschuel', punkte:250, icon:'🎖️', titel:'Vertrauensschüler', text:'250 Punkte! Du übernimmst Verantwortung – dein Haus ist stolz auf dich.' },
   { id:'schulsprecher',    punkte:500, icon:'👑', titel:'Schulsprecher',    text:'500 Punkte! Du bist an der Spitze der Schule angekommen. Ganz großes Kino!' }
 ];
+</script>
+
+<script>
+/* =====================================================================
+   TEIL A2 — DATEN FÜR SPIELE, QUIZ UND TESTS
+   ===================================================================== */
+
+/* Bestwerte für diesen Besuch (nicht gespeichert – nur im Arbeitsspeicher) */
+window.HP.bestwerte = {};
+
+/* --- Memory: sechs magische Geschöpfe -------------------------------- */
+const MEMORY_PAARE = [
+  { icon:'🦉', name:'Eule' },     { icon:'🐉', name:'Drache' },
+  { icon:'🦡', name:'Dachs' },    { icon:'🦅', name:'Adler' },
+  { icon:'🦌', name:'Hirsch' },   { icon:'🐍', name:'Schlange' }
+];
+
+/* --- Duell: Angriff und passender Gegenzauber ------------------------ */
+const DUELL_RUNDEN = [
+  { spruch:'Incendio!',           lage:'Vor dir lodert plötzlich ein kleines Feuer.',       richtig:'Aguamenti',        erklaerung:'Aguamenti zaubert Wasser – damit ist das Feuer aus.' },
+  { spruch:'Lumos Maxima!',       lage:'Grelles Licht blendet dich völlig.',                richtig:'Nox',              erklaerung:'Nox löscht das Licht wieder.' },
+  { spruch:'Sonorus!',            lage:'Eine ohrenbetäubend laute Stimme dröhnt durch den Saal.', richtig:'Quietus',    erklaerung:'Quietus dreht die Lautstärke wieder herunter.' },
+  { spruch:'Engorgio!',           lage:'Dein Rucksack wird größer und größer.',             richtig:'Reducio',          erklaerung:'Reducio schrumpft ihn auf Normalgröße.' },
+  { spruch:'Alohomora!',          lage:'Jemand öffnet heimlich eure Schlafsaaltür.',        richtig:'Colloportus',      erklaerung:'Colloportus verschließt die Tür wieder.' },
+  { spruch:'Stupor!',             lage:'Dein Freund wurde getroffen und schläft tief.',     richtig:'Rennervate',       erklaerung:'Rennervate weckt ihn sanft wieder auf.' },
+  { spruch:'Tarantallegra!',      lage:'Deine Beine tanzen wild über den Gang.',            richtig:'Finite Incantatem',erklaerung:'Finite Incantatem beendet laufende Zauber.' },
+  { spruch:'Wingardium Leviosa!', lage:'Ein dickes Buch schwebt über deinem Kopf.',         richtig:'Descendo',         erklaerung:'Descendo holt es sanft wieder nach unten.' },
+  { spruch:'Ein Fluch fliegt heran!', lage:'Keine Zeit – schütz dich sofort!',              richtig:'Protego',          erklaerung:'Protego baut ein unsichtbares Schutzschild.' },
+  { spruch:'Ein Irrwicht springt aus dem Schrank!', lage:'Er verwandelt sich in deine Angst.', richtig:'Riddikulus',    erklaerung:'Riddikulus macht ihn lustig – Lachen hilft.' },
+  { spruch:'Dein Kessel kippt um!', lage:'Überall klebt grüne Soße auf dem Boden.',          richtig:'Scourgify',        erklaerung:'Scourgify putzt alles im Nu sauber.' },
+  { spruch:'Deine Brille zerbricht!', lage:'Die Gläser liegen in Scherben.',                 richtig:'Reparo',           erklaerung:'Reparo setzt sie wieder zusammen.' },
+  { spruch:'Du hast dich verlaufen!', lage:'Im Nebel siehst du keinen Weg mehr.',            richtig:'Point Me',         erklaerung:'Der Vier-Punkte-Zauber zeigt dir, wo Norden ist.' },
+  { spruch:'Ein Schwarm Wichtel!',  lage:'Sie schwirren wild durch das Klassenzimmer.',      richtig:'Immobulus',        erklaerung:'Immobulus hält alles Bewegliche an.' }
+];
+
+/* --- Zaubertrank: Zutaten und Rezepte -------------------------------- */
+const TRANK_ZUTATEN = [
+  { icon:'🍄', name:'Pilz' },      { icon:'🌿', name:'Kraut' },
+  { icon:'🪶', name:'Feder' },     { icon:'🐚', name:'Muschel' },
+  { icon:'🍋', name:'Zitrone' },   { icon:'🧊', name:'Eis' },
+  { icon:'⭐', name:'Sternstaub' },{ icon:'🫐', name:'Beere' }
+];
+const TRANK_STUFEN = [
+  { name:'Kribbeltrank',   laenge:3 },
+  { name:'Mutmachtrank',   laenge:4 },
+  { name:'Flüstertrank',   laenge:5 },
+  { name:'Sternenelixier', laenge:6 }
+];
+
+/* --- Wortsuche: versteckte Zauberformeln ----------------------------- */
+const WORTSUCHE_WOERTER = ['LUMOS', 'ACCIO', 'PROTEGO', 'REPARO', 'STUPOR', 'TERGEO'];
+
+/* --- Wissensquiz: drei Schwierigkeitsstufen -------------------------- */
+/* r = Nummer der richtigen Antwort (0 bis 3) */
+const QUIZ_FRAGEN = {
+  leicht: [
+    { f:'Wie heißt die berühmte Zauberschule in Schottland?', a:['Hogwarts','Beauxbatons','Durmstrang','Ilvermorny'], r:0, e:'Hogwarts liegt in den schottischen Highlands, versteckt vor Muggelaugen.' },
+    { f:'Welches Tier ist das Wappentier von Gryffindor?',    a:['Der Adler','Der Löwe','Der Dachs','Die Schlange'], r:1, e:'Der Löwe steht für Mut – genau das, was Gryffindor auszeichnet.' },
+    { f:'Womit spielt man Quidditch?',                        a:['Mit Schlittschuhen','Mit fliegenden Teppichen','Mit fliegenden Besen','Zu Fuß'], r:2, e:'Quidditch wird hoch in der Luft auf Besen gespielt.' },
+    { f:'Von welchem Gleis fährt der Hogwarts-Express?',      a:['Gleis 7','Gleis neun dreiviertel','Gleis 13','Gleis eindreiviertel'], r:1, e:'Man läuft einfach durch die Absperrung zwischen Gleis 9 und 10.' },
+    { f:'Welcher Zauberspruch macht Licht?',                  a:['Nox','Accio','Lumos','Reparo'], r:2, e:'Lumos lässt die Zauberstabspitze leuchten.' },
+    { f:'Wer teilt die neuen Schüler in die Häuser ein?',     a:['Der Sprechende Hut','Der Schulleiter','Ein Losverfahren','Die Eulen'], r:0, e:'Der Sprechende Hut liest in den Gedanken und ruft das Haus aus.' },
+    { f:'Wie viele Häuser gibt es in Hogwarts?',              a:['Drei','Vier','Fünf','Sieben'], r:1, e:'Gryffindor, Hufflepuff, Ravenclaw und Slytherin.' },
+    { f:'Welches Tier gehört zu Slytherin?',                  a:['Der Dachs','Der Rabe','Die Schlange','Der Fuchs'], r:2, e:'Die Schlange steht für Cleverness und Zielstrebigkeit.' },
+    { f:'Wie heißt die Einkaufsstraße für Zauberer in London?', a:['Die Winkelgasse','Die Nokturngasse','Die Zauberstraße','Hogsmeade'], r:0, e:'In der Winkelgasse gibt es Zauberstäbe, Kessel und Eulen.' },
+    { f:'Womit schreibt man in Hogwarts?',                    a:['Mit Kugelschreiber','Mit Feder und Tinte','Mit Bleistift','Mit dem Finger'], r:1, e:'In der Zauberwelt schreibt man klassisch mit Federkiel auf Pergament.' }
+  ],
+  mittel: [
+    { f:'Welcher Quidditch-Ball bringt 150 Punkte?',          a:['Der Quaffel','Ein Klatscher','Der goldene Schnatz','Der Koboldstein'], r:2, e:'Wer den Schnatz fängt, beendet meistens auch das Spiel.' },
+    { f:'Wie heißt der Gegenzauber zu Lumos?',                a:['Nox','Finite','Silencio','Quietus'], r:0, e:'Nox macht das Licht am Zauberstab wieder aus.' },
+    { f:'In welchem Fach arbeitet man mit Kesseln?',          a:['Verwandlung','Zaubertränke','Astronomie','Wahrsagen'], r:1, e:'Zaubertränke braut man in Kesseln – Reihenfolge und Rührrichtung zählen.' },
+    { f:'Wie heißt die Bank der Zaubererwelt?',               a:['Gringotts','Flourish & Blotts','Ollivanders','Zonko'], r:0, e:'Gringotts wird von Kobolden geführt, tief unter London.' },
+    { f:'Welcher Zauber entwaffnet das Gegenüber?',           a:['Stupor','Protego','Expelliarmus','Incendio'], r:2, e:'Expelliarmus lässt den Zauberstab aus der Hand fliegen.' },
+    { f:'Was passiert, wenn man eine Mandragora herauszieht?', a:['Sie lacht','Sie schreit laut','Sie verschwindet','Sie fliegt weg'], r:1, e:'Darum trägt man im Gewächshaus immer Ohrenschützer.' },
+    { f:'Wie heißt der Hausgeist von Ravenclaw?',             a:['Der Blutige Baron','Die Graue Dame','Der Fette Mönch','Der Fast Kopflose Nick'], r:1, e:'Die Graue Dame schwebt still durch den Ravenclaw-Turm.' },
+    { f:'Wie kommt man in den Ravenclaw-Turm hinein?',        a:['Mit einem Passwort','Man löst ein Rätsel','Man klopft dreimal','Mit einem Schlüssel'], r:1, e:'Ravenclaw hat kein Passwort – dort muss man mitdenken.' },
+    { f:'Was bewirkt der Zauber Riddikulus?',                 a:['Er macht unsichtbar','Er heilt Wunden','Er macht einen Irrwicht lustig','Er öffnet Türen'], r:2, e:'Gegen einen Irrwicht hilft Lachen am besten.' },
+    { f:'Wie viele Spieler hat eine Quidditch-Mannschaft?',   a:['Fünf','Sechs','Sieben','Elf'], r:2, e:'Drei Jäger, zwei Treiber, ein Hüter und ein Sucher.' }
+  ],
+  schwer: [
+    { f:'Welcher Trank soll für ein paar Stunden Glück bringen?', a:['Felix Felicis','Amortentia','Veritaserum','Polyjuice'], r:0, e:'Felix Felicis ist schwer zu brauen und wirkt nur kurz.' },
+    { f:'Welcher Zauber lässt Dinge einfach verschwinden?',   a:['Evanesco','Reducio','Diffindo','Geminio'], r:0, e:'Evanesco schickt Gegenstände ins Nirgendwo – ziemlich knifflig.' },
+    { f:'Wie viele Treppen hat Hogwarts der Überlieferung nach?', a:['42','98','142','214'], r:2, e:'142 Treppen – und viele davon bewegen sich einfach weiter.' },
+    { f:'Wie heißt der Raum, der nur erscheint, wenn man ihn braucht?', a:['Die Kammer der Rätsel','Der Raum der Wünsche','Der Spiegelsaal','Der Turm der Winde'], r:1, e:'Der Raum der Wünsche liegt im siebten Stock und ist schwer zu finden.' },
+    { f:'Was bewirkt der Zauber Muffliato?',                  a:['Er macht stumm','Er erzeugt ein Summen in fremden Ohren','Er verschließt Türen','Er löscht Erinnerungen'], r:1, e:'So kann niemand mithören, was man gerade bespricht.' },
+    { f:'Wie nennt man den Vier-Punkte-Zauber?',              a:['Point Me','Locomotor','Descendo','Orchideous'], r:0, e:'Der Zauberstab dreht sich auf der Handfläche und zeigt nach Norden.' },
+    { f:'Wie heißt der Hausgeist von Slytherin?',             a:['Der Fette Mönch','Die Graue Dame','Der Blutige Baron','Peeves'], r:2, e:'Peeves ist übrigens kein Geist, sondern ein Poltergeist.' },
+    { f:'Welcher Zauber erzeugt eine Kopie eines Gegenstands?', a:['Geminio','Engorgio','Avis','Ferula'], r:0, e:'Die Kopie sieht echt aus, taugt aber meistens wenig.' },
+    { f:'Welche magischen Pferde kann nicht jeder sehen?',    a:['Hippogreife','Thestrale','Zentauren','Einhörner'], r:1, e:'Thestrale sieht nur, wer schon einmal etwas sehr Trauriges erlebt hat.' },
+    { f:'Was macht ein Niffler am liebsten?',                 a:['Er singt','Er sammelt alles Glänzende','Er gräbt Tunnel','Er schläft'], r:1, e:'Nifflers stopfen Goldstücke und Ringe in ihren Beutel.' }
+  ]
+};
+
+/* --- Test: Welcher Charakter bist du? -------------------------------- */
+const TEST_CHARAKTER = {
+  id:'charakter',
+  titel:'Welcher Charakter bist du?',
+  intro:'Zwölf Fragen – dann weißt du, welcher Figur du am ähnlichsten bist.',
+  ergebnisse: {
+    harry:   { name:'Harry',   icon:'⚡', zeile:'Der mutige Beschützer', text:'Du stellst dich vor deine Freunde, auch wenn es gefährlich wird. Regeln sind dir wichtig – aber Freundschaft ist dir wichtiger.' },
+    hermine: { name:'Hermine', icon:'📚', zeile:'Die kluge Denkerin',    text:'Du liest viel, planst gern und hast oft schon eine Lösung, bevor die anderen die Frage verstanden haben. Ungerechtigkeit kannst du nicht ausstehen.' },
+    ron:     { name:'Ron',     icon:'♟️', zeile:'Der treue Freund',      text:'Du bringst alle zum Lachen und bist da, wenn es darauf ankommt. Manchmal zweifelst du an dir – völlig zu Unrecht.' },
+    luna:    { name:'Luna',    icon:'🌙', zeile:'Die freundliche Träumerin', text:'Du siehst die Welt ein bisschen anders als alle anderen – und das ist deine größte Stärke. Du bist zu jedem nett, auch zu Käfern.' },
+    neville: { name:'Neville', icon:'🌱', zeile:'Der stille Held',       text:'Du bist eher leise, aber wenn es wirklich zählt, wächst du über dich hinaus. Pflanzen und Tiere mögen dich besonders.' },
+    hagrid:  { name:'Hagrid',  icon:'🐾', zeile:'Das große Herz',        text:'Du hast für jeden ein offenes Ohr und findest sogar Drachen niedlich. Deine Freundlichkeit steckt alle an.' }
+  },
+  fragen: [
+    { frage:'Der Unterricht fällt aus. Was machst du?', antworten:[
+      { text:'Raus an die frische Luft und etwas erkunden.', w:{ harry:2, hagrid:1 } },
+      { text:'In die Bibliothek – endlich Zeit zum Lesen.',  w:{ hermine:3 } },
+      { text:'Zaubererschach mit Freunden spielen.',          w:{ ron:3 } },
+      { text:'Draußen die Wolken beobachten.',                w:{ luna:3 } } ]},
+    { frage:'Welches Wort beschreibt dich am besten?', antworten:[
+      { text:'Tapfer',    w:{ harry:3 } },
+      { text:'Neugierig', w:{ hermine:2, luna:1 } },
+      { text:'Lustig',    w:{ ron:3 } },
+      { text:'Gutmütig',  w:{ hagrid:2, neville:1 } } ]},
+    { frage:'Im Gemeinschaftsraum wird es laut. Du …', antworten:[
+      { text:'mischst mitten drin mit.',                 w:{ ron:2, harry:1 } },
+      { text:'bittest höflich um etwas Ruhe.',           w:{ hermine:3 } },
+      { text:'setzt dich in eine Ecke und liest weiter.', w:{ luna:2, neville:1 } },
+      { text:'holst allen etwas zu essen.',              w:{ hagrid:3 } } ]},
+    { frage:'Was wäre dein Lieblingsfach?', antworten:[
+      { text:'Verteidigung gegen die dunklen Künste.', w:{ harry:3 } },
+      { text:'Arithmantik und alte Runen.',            w:{ hermine:3 } },
+      { text:'Pflege magischer Geschöpfe.',            w:{ hagrid:3 } },
+      { text:'Kräuterkunde im Gewächshaus.',           w:{ neville:3 } } ]},
+    { frage:'Jemand lacht über deinen Freund. Du …', antworten:[
+      { text:'stellst dich sofort dazwischen.',          w:{ harry:3 } },
+      { text:'erklärst ruhig, warum das gemein ist.',    w:{ hermine:2, luna:1 } },
+      { text:'machst einen Witz, der alle ablenkt.',     w:{ ron:3 } },
+      { text:'nimmst deinen Freund einfach mit weg.',    w:{ neville:2, hagrid:1 } } ]},
+    { frage:'Dein Lieblingsplatz in Hogwarts?', antworten:[
+      { text:'Das Quidditch-Feld.',        w:{ harry:2, ron:1 } },
+      { text:'Die Bibliothek.',            w:{ hermine:3 } },
+      { text:'Der Rand des verbotenen Waldes.', w:{ hagrid:2, luna:1 } },
+      { text:'Das Gewächshaus.',           w:{ neville:3 } } ]},
+    { frage:'Wie gehst du an Hausaufgaben heran?', antworten:[
+      { text:'Sofort und gründlich, mit Plan.',    w:{ hermine:3 } },
+      { text:'Auf den letzten Drücker, aber es klappt.', w:{ ron:3 } },
+      { text:'Zusammen mit Freunden am Tisch.',    w:{ harry:2 } },
+      { text:'Ganz anders als alle anderen.',      w:{ luna:3 } } ]},
+    { frage:'Ein magisches Geschöpf steht vor dir. Du …', antworten:[
+      { text:'begrüßt es höflich und wartest ab.', w:{ harry:2, neville:1 } },
+      { text:'schlägst erst mal im Buch nach.',    w:{ hermine:3 } },
+      { text:'gehst lieber einen Schritt zurück.', w:{ ron:2, neville:1 } },
+      { text:'freust dich riesig und gibst ihm einen Namen.', w:{ hagrid:3 } } ]},
+    { frage:'Was macht dir am meisten Angst?', antworten:[
+      { text:'Dass meinen Freunden etwas passiert.', w:{ harry:3 } },
+      { text:'Zu versagen.',                        w:{ hermine:2, neville:1 } },
+      { text:'Spinnen. Ganz klar Spinnen.',         w:{ ron:3 } },
+      { text:'Eigentlich nicht viel.',              w:{ luna:2, hagrid:1 } } ]},
+    { frage:'Wie feierst du einen Sieg?', antworten:[
+      { text:'Mit einer großen Party im Gemeinschaftsraum.', w:{ ron:2, harry:1 } },
+      { text:'Mit einem guten Buch und Ruhe.',    w:{ hermine:2, luna:1 } },
+      { text:'Mit einem riesigen Kuchen für alle.', w:{ hagrid:3 } },
+      { text:'Ich freue mich still für mich.',     w:{ neville:3 } } ]},
+    { frage:'Welches Haustier hättest du gern?', antworten:[
+      { text:'Eine schnelle Eule.',      w:{ harry:2, hermine:1 } },
+      { text:'Eine kluge Katze.',        w:{ hermine:2, luna:1 } },
+      { text:'Eine gemütliche Kröte.',   w:{ neville:3 } },
+      { text:'Etwas Großes mit Schuppen.', w:{ hagrid:3 } } ]},
+    { frage:'Was möchtest du später machen?', antworten:[
+      { text:'Andere beschützen.',            w:{ harry:3 } },
+      { text:'Regeln gerechter machen.',      w:{ hermine:3 } },
+      { text:'Etwas mit Sport und Menschen.', w:{ ron:3 } },
+      { text:'Mit Tieren und Pflanzen arbeiten.', w:{ hagrid:2, neville:2 } } ]}
+  ]
+};
+
+/* --- Test: Was ist dein Patronus? ------------------------------------ */
+const TEST_PATRONUS = {
+  id:'patronus',
+  titel:'Was ist dein Patronus?',
+  intro:'Denk an etwas richtig Schönes – dann verrät dir dein Zauberstab dein Schutztier.',
+  ergebnisse: {
+    hirsch: { name:'Der Hirsch',  icon:'🦌', zeile:'Ruhig und beschützend', text:'Dein Patronus stellt sich schützend vor alle, die dir wichtig sind. Er strahlt Ruhe aus – und niemand traut sich an ihm vorbei.' },
+    otter:  { name:'Der Otter',   icon:'🦦', zeile:'Fröhlich und verspielt', text:'Dein Patronus wirbelt vor Lebensfreude herum. Er bringt selbst an trüben Tagen alle zum Lächeln.' },
+    fuchs:  { name:'Der Fuchs',   icon:'🦊', zeile:'Schlau und wendig',      text:'Dein Patronus findet immer einen Ausweg. Er ist schnell, aufmerksam und ziemlich clever.' },
+    eule:   { name:'Die Eule',    icon:'🦉', zeile:'Klug und aufmerksam',    text:'Dein Patronus sieht auch im Dunkeln klar. Er beobachtet erst und handelt dann – genau richtig.' },
+    wolf:   { name:'Der Wolf',    icon:'🐺', zeile:'Treu zum Rudel',         text:'Dein Patronus lässt niemanden zurück. Freundschaft ist für ihn das Allerwichtigste.' },
+    delfin: { name:'Der Delfin',  icon:'🐬', zeile:'Gesellig und hilfsbereit', text:'Dein Patronus schwimmt sofort dorthin, wo jemand Hilfe braucht. Er ist nie lange allein.' },
+    hase:   { name:'Der Hase',    icon:'🐇', zeile:'Schnell und mutig',      text:'Dein Patronus ist blitzschnell und viel mutiger, als er aussieht. Er bringt dich sicher davon.' },
+    katze:  { name:'Die Katze',   icon:'🐈', zeile:'Unabhängig und wachsam', text:'Dein Patronus geht seinen eigenen Weg. Er merkt sofort, wenn etwas nicht stimmt.' }
+  },
+  fragen: [
+    { frage:'Woran denkst du bei einer richtig schönen Erinnerung?', antworten:[
+      { text:'An einen Tag mit meiner Familie.',      w:{ hirsch:2, wolf:1 } },
+      { text:'An einen Lachanfall mit Freunden.',     w:{ otter:2, delfin:1 } },
+      { text:'An einen Sieg, für den ich lange geübt habe.', w:{ fuchs:2, hase:1 } },
+      { text:'An einen ruhigen Abend ganz für mich.', w:{ eule:2, katze:1 } } ]},
+    { frage:'Wo fühlst du dich am wohlsten?', antworten:[
+      { text:'Im Wald zwischen Bäumen.',   w:{ hirsch:2, wolf:1 } },
+      { text:'Am Wasser.',                 w:{ otter:2, delfin:2 } },
+      { text:'Hoch oben mit Aussicht.',    w:{ eule:2 } },
+      { text:'Zu Hause auf dem Sofa.',     w:{ katze:2, hase:1 } } ]},
+    { frage:'Wie gehst du auf neue Leute zu?', antworten:[
+      { text:'Ich spreche sie einfach an.',   w:{ delfin:2, otter:1 } },
+      { text:'Ich warte ab und schaue erst.', w:{ eule:2, katze:1 } },
+      { text:'Ich bringe sie zum Lachen.',    w:{ otter:2 } },
+      { text:'Ich stelle sie meinen Freunden vor.', w:{ wolf:2, hirsch:1 } } ]},
+    { frage:'Es wird gefährlich. Deine erste Reaktion?', antworten:[
+      { text:'Ich stelle mich schützend davor.', w:{ hirsch:3 } },
+      { text:'Ich renne los und hole Hilfe.',    w:{ hase:3 } },
+      { text:'Ich suche einen cleveren Ausweg.', w:{ fuchs:3 } },
+      { text:'Ich bleibe bei meinen Leuten.',    w:{ wolf:3 } } ]},
+    { frage:'Welche Tageszeit magst du am liebsten?', antworten:[
+      { text:'Den frühen Morgen.',   w:{ hase:2, hirsch:1 } },
+      { text:'Den hellen Mittag.',   w:{ delfin:2, otter:1 } },
+      { text:'Den Abend.',           w:{ katze:2, fuchs:1 } },
+      { text:'Die tiefe Nacht.',     w:{ eule:3 } } ]},
+    { frage:'Was ist deine größte Stärke?', antworten:[
+      { text:'Ich bin zuverlässig.', w:{ hirsch:2, wolf:1 } },
+      { text:'Ich bin schnell.',     w:{ hase:2, fuchs:1 } },
+      { text:'Ich denke mit.',       w:{ eule:2, fuchs:1 } },
+      { text:'Ich mache anderen Mut.', w:{ otter:2, delfin:1 } } ]},
+    { frage:'Wie lernst du am liebsten?', antworten:[
+      { text:'Durch Ausprobieren.',    w:{ otter:2, fuchs:1 } },
+      { text:'Durch Zuschauen.',       w:{ katze:2, eule:1 } },
+      { text:'Zusammen in der Gruppe.', w:{ delfin:2, wolf:1 } },
+      { text:'Ganz in Ruhe für mich.', w:{ eule:2, hase:1 } } ]},
+    { frage:'Ein Freund ist traurig. Du …', antworten:[
+      { text:'bleibst einfach still bei ihm.', w:{ hirsch:2, katze:1 } },
+      { text:'bringst ihn zum Lachen.',        w:{ otter:3 } },
+      { text:'suchst eine Lösung für ihn.',    w:{ fuchs:2, eule:1 } },
+      { text:'holst gleich alle Freunde dazu.', w:{ wolf:2, delfin:1 } } ]},
+    { frage:'Welche Farbe passt zu dir?', antworten:[
+      { text:'Warmes Braun.',   w:{ hirsch:2, hase:1 } },
+      { text:'Helles Blau.',    w:{ delfin:2, eule:1 } },
+      { text:'Leuchtendes Orange.', w:{ fuchs:2, otter:1 } },
+      { text:'Tiefes Grau.',    w:{ wolf:2, katze:1 } } ]},
+    { frage:'Was wünschst du dir am meisten?', antworten:[
+      { text:'Dass alle sicher sind.',      w:{ hirsch:3 } },
+      { text:'Viele fröhliche Tage.',       w:{ otter:2, delfin:1 } },
+      { text:'Antworten auf meine Fragen.', w:{ eule:2, fuchs:1 } },
+      { text:'Freunde, die immer bleiben.', w:{ wolf:2, katze:1 } } ]}
+  ]
+};
+
+/* --- Test: Welcher Zauberstab passt zu dir? -------------------------- */
+const STAB_HOLZ = {
+  eiche:      { name:'Eichenholz',   farbe:'#7a5230', text:'stark und verlässlich – ein Holz für mutige Herzen.' },
+  weide:      { name:'Weidenholz',   farbe:'#c0a271', text:'feinfühlig und heilend – für alle, die gern helfen.' },
+  stechpalme: { name:'Stechpalme',   farbe:'#5a3a22', text:'schützend und tapfer – sie mag Beschützer.' },
+  esche:      { name:'Eschenholz',   farbe:'#c9b184', text:'treu bis zum Schluss – sie bleibt bei einer Person.' },
+  ahorn:      { name:'Ahornholz',    farbe:'#a2673a', text:'für Entdeckerinnen, die Neues wagen.' },
+  ebenholz:   { name:'Ebenholz',     farbe:'#3a2b20', text:'eigenwillig und mutig – für alle, die zu sich stehen.' }
+};
+const STAB_KERN = {
+  phoenix: { name:'Phönixfeder',      text:'selten und eigensinnig, dafür unglaublich vielseitig.' },
+  drache:  { name:'Drachenherzfaser', text:'kraftvoll und schnell – lernt neue Zauber im Nu.' },
+  einhorn: { name:'Einhornhaar',      text:'treu und beständig – dieser Kern hält dir die Stange.' }
+};
+const STAB_ART = {
+  kurz:     { name:'24 cm, ziemlich fest',      text:'Kurz und bestimmt – du weißt genau, was du willst.' },
+  mittel:   { name:'28 cm, angenehm biegsam',   text:'Schön ausgewogen – du passt dich gut an.' },
+  lang:     { name:'33 cm, sehr biegsam',       text:'Lang und geschmeidig – du denkst gern um die Ecke.' },
+  kraeftig: { name:'30 cm, unnachgiebig',       text:'Kräftig und standhaft – dich bringt so schnell nichts um.' }
+};
+const TEST_ZAUBERSTAB = {
+  id:'zauberstab',
+  titel:'Welcher Zauberstab passt zu dir?',
+  intro:'Neun Fragen bei Ollivander – dann sucht der Zauberstab sich dich aus.',
+  fragen: [
+    { feld:'holz', frage:'Du stehst im Laden. Welches Holz fühlt sich sofort richtig an?', antworten:[
+      { text:'Dunkel und schwer.',    w:{ ebenholz:2, stechpalme:1 } },
+      { text:'Hell und warm.',        w:{ esche:2, weide:1 } },
+      { text:'Rötlich und lebendig.', w:{ ahorn:2 } },
+      { text:'Kräftig und knorrig.',  w:{ eiche:2 } } ]},
+    { feld:'holz', frage:'Was ist dir bei Freundschaften am wichtigsten?', antworten:[
+      { text:'Dass man sich blind vertrauen kann.', w:{ esche:3 } },
+      { text:'Dass man füreinander einsteht.',      w:{ stechpalme:2, eiche:1 } },
+      { text:'Dass man zusammen Neues erlebt.',     w:{ ahorn:3 } },
+      { text:'Dass man einander tröstet.',          w:{ weide:3 } } ]},
+    { feld:'holz', frage:'Wie triffst du Entscheidungen?', antworten:[
+      { text:'Aus dem Bauch heraus.',        w:{ ebenholz:2, ahorn:1 } },
+      { text:'Nach langem Überlegen.',       w:{ eiche:2, esche:1 } },
+      { text:'Ich frage jemanden, dem ich vertraue.', w:{ weide:2 } },
+      { text:'Ich mache, was sich richtig anfühlt – auch wenn andere staunen.', w:{ stechpalme:2, ebenholz:1 } } ]},
+    { feld:'kern', frage:'Welcher Satz passt am besten zu dir?', antworten:[
+      { text:'Ich mache mein eigenes Ding.',   w:{ phoenix:3 } },
+      { text:'Ich gebe richtig Gas.',          w:{ drache:3 } },
+      { text:'Ich bin für andere da.',         w:{ einhorn:3 } },
+      { text:'Ich überrasche mich selbst.',    w:{ phoenix:2, drache:1 } } ]},
+    { feld:'kern', frage:'Wie lernst du einen schweren Zauber?', antworten:[
+      { text:'Ich probiere so lange, bis es klappt.', w:{ drache:2, phoenix:1 } },
+      { text:'Ich übe geduldig jeden Tag ein bisschen.', w:{ einhorn:3 } },
+      { text:'Ich warte, bis mir die Idee kommt.',   w:{ phoenix:2 } },
+      { text:'Ich lasse ihn mir zeigen und mache nach.', w:{ einhorn:2, drache:1 } } ]},
+    { feld:'kern', frage:'Was soll dein Zauberstab können?', antworten:[
+      { text:'Fast alles – nur bitte nichts Langweiliges.', w:{ phoenix:3 } },
+      { text:'Ordentlich Kraft haben.',       w:{ drache:3 } },
+      { text:'Immer zuverlässig funktionieren.', w:{ einhorn:3 } },
+      { text:'Zu mir passen wie ein Freund.',  w:{ einhorn:2, phoenix:1 } } ]},
+    { feld:'art', frage:'Wie bewegst du dich durch einen vollen Gang?', antworten:[
+      { text:'Zackig und zielstrebig.',   w:{ kurz:3 } },
+      { text:'Locker im Fluss.',          w:{ mittel:3 } },
+      { text:'Mit vielen kleinen Umwegen.', w:{ lang:3 } },
+      { text:'Ruhig, aber nicht aufzuhalten.', w:{ kraeftig:3 } } ]},
+    { feld:'art', frage:'Etwas läuft schief. Du …', antworten:[
+      { text:'machst sofort etwas anderes.',  w:{ kurz:2, mittel:1 } },
+      { text:'bleibst dran, bis es klappt.',  w:{ kraeftig:3 } },
+      { text:'suchst einen ganz neuen Weg.',  w:{ lang:3 } },
+      { text:'holst dir kurz Rat und machst weiter.', w:{ mittel:3 } } ]},
+    { feld:'art', frage:'Wie beschreiben Freunde dich?', antworten:[
+      { text:'Klar und direkt.',      w:{ kurz:3 } },
+      { text:'Ausgeglichen.',         w:{ mittel:3 } },
+      { text:'Fantasievoll.',         w:{ lang:3 } },
+      { text:'Standhaft.',            w:{ kraeftig:3 } } ]}
+  ]
+};
+
+const TESTS = { charakter: TEST_CHARAKTER, patronus: TEST_PATRONUS };
 </script>
 
 <script>
@@ -1248,54 +1777,78 @@ function toastZeigen(text){
    TEIL C — TÖNE MIT DER WEB AUDIO API
    Wir erzeugen alle Töne selbst. Keine Sounddateien nötig.
    ===================================================================== */
-let audioCtx = null;
+let audioCtx = null;    // der Ton-Kontext
+let meister = null;     // Haupt-Lautstärkeregler
 
-/* Der Ton-Kontext darf erst nach einer Nutzeraktion starten. */
+/* Browser erlauben Töne erst nach einer echten Nutzeraktion.
+   Darum bauen wir den Ton-Kontext beim ersten Klick oder Tastendruck auf. */
 function audioStarten(){
   if (!audioCtx){
     const AC = window.AudioContext || window.webkitAudioContext;
-    if (AC) audioCtx = new AC();
+    if (!AC) return null;
+    audioCtx = new AC();
+    meister = audioCtx.createGain();
+    meister.gain.value = 0.55;
+    meister.connect(audioCtx.destination);
   }
-  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  if (audioCtx.state !== 'running' && audioCtx.resume) audioCtx.resume().catch(() => {});
   return audioCtx;
+}
+
+/* Schon die allererste Berührung entsperrt den Ton – auch wenn der
+   Ton-Knopf erst später gedrückt wird. */
+['pointerdown', 'keydown', 'touchstart'].forEach(ereignis =>
+  document.addEventListener(ereignis, () => audioStarten(), { once: true, passive: true }));
+
+/* Erzeugt wirklich den Ton. Wird nur aufgerufen, wenn der Kontext läuft. */
+function tonJetzt(ctx, f1, f2, dauer, form, laut, verzoegerung){
+  const t0 = ctx.currentTime + 0.03 + verzoegerung;   // kleiner Vorlauf
+  const osz = ctx.createOscillator();
+  const huelle = ctx.createGain();
+  osz.type = form;
+  osz.frequency.setValueAtTime(f1, t0);
+  if (f2 !== f1) osz.frequency.exponentialRampToValueAtTime(Math.max(20, f2), t0 + dauer);
+  huelle.gain.setValueAtTime(0.0001, t0);
+  huelle.gain.linearRampToValueAtTime(laut, t0 + 0.02);
+  huelle.gain.exponentialRampToValueAtTime(0.0005, t0 + dauer);
+  osz.connect(huelle).connect(meister);
+  osz.start(t0);
+  osz.stop(t0 + dauer + 0.08);
 }
 
 /* Spielt einen einzelnen Ton ab.
    f1 = Startfrequenz, f2 = Endfrequenz, dauer in Sekunden */
-function ton(f1, f2, dauer, form = 'sine', laut = 0.14, verzoegerung = 0){
+function ton(f1, f2, dauer, form = 'sine', laut = 0.22, verzoegerung = 0){
   if (!window.HP.tonAn) return;
   const ctx = audioStarten();
-  if (!ctx) return;
-  const t0 = ctx.currentTime + verzoegerung;
-  const osz = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osz.type = form;
-  osz.frequency.setValueAtTime(f1, t0);
-  if (f2 !== f1) osz.frequency.exponentialRampToValueAtTime(Math.max(1, f2), t0 + dauer);
-  gain.gain.setValueAtTime(0.0001, t0);
-  gain.gain.exponentialRampToValueAtTime(laut, t0 + 0.015);
-  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dauer);
-  osz.connect(gain).connect(ctx.destination);
-  osz.start(t0);
-  osz.stop(t0 + dauer + 0.05);
+  if (!ctx || !meister) return;
+  if (ctx.state === 'running'){
+    tonJetzt(ctx, f1, f2, dauer, form, laut, verzoegerung);
+  } else if (ctx.resume){
+    // Falls der Kontext noch schläft: erst aufwecken, dann spielen
+    ctx.resume().then(() => tonJetzt(ctx, f1, f2, dauer, form, laut, verzoegerung)).catch(() => {});
+  }
 }
 
 /* Fertige Klänge für verschiedene Ereignisse */
 const KLANG = {
-  klick:   () => ton(520, 700, 0.09, 'triangle', 0.09),
-  wechsel: () => ton(330, 620, 0.16, 'sine', 0.10),
-  zauber:  () => { // aufsteigendes Funkeln
-    ton(420, 1400, 0.34, 'sine', 0.13);
-    ton(880, 2200, 0.26, 'triangle', 0.06, 0.05);
-    ton(1320, 2640, 0.22, 'sine', 0.045, 0.11);
+  klick:   () => ton(520, 700, 0.09, 'triangle', 0.18),
+  wechsel: () => ton(330, 620, 0.18, 'sine', 0.22),
+  zauber:  () => {                       // aufsteigendes Funkeln
+    ton(420, 1400, 0.34, 'sine', 0.24);
+    ton(880, 2200, 0.26, 'triangle', 0.12, 0.05);
+    ton(1320, 2640, 0.22, 'sine', 0.09, 0.11);
   },
-  richtig: () => { ton(660, 660, 0.12, 'sine', 0.12); ton(880, 880, 0.20, 'sine', 0.12, 0.11); },
-  punkt:   () => { ton(784, 784, 0.09, 'triangle', 0.10); ton(1175, 1175, 0.16, 'triangle', 0.09, 0.08); },
-  fanfare: () => { // kleine Melodie für Abzeichen
-    [523, 659, 784, 1047].forEach((f, i) => ton(f, f, 0.30, 'triangle', 0.12, i * 0.13));
-    ton(1568, 1568, 0.6, 'sine', 0.08, 0.55);
+  richtig: () => { ton(660, 660, 0.12, 'sine', 0.24); ton(880, 880, 0.22, 'sine', 0.24, 0.11); },
+  falsch:  () => { ton(300, 150, 0.30, 'sawtooth', 0.14); },
+  punkt:   () => { ton(784, 784, 0.09, 'triangle', 0.20); ton(1175, 1175, 0.16, 'triangle', 0.18, 0.08); },
+  treffer: () => ton(900, 1500, 0.10, 'triangle', 0.20),
+  tick:    () => ton(1200, 1200, 0.04, 'square', 0.07),
+  fanfare: () => {                       // kleine Melodie für Abzeichen
+    [523, 659, 784, 1047].forEach((f, i) => ton(f, f, 0.30, 'triangle', 0.22, i * 0.13));
+    ton(1568, 1568, 0.6, 'sine', 0.16, 0.55);
   },
-  hut:     () => { ton(220, 180, 0.5, 'sawtooth', 0.05); ton(440, 660, 0.4, 'sine', 0.07, 0.15); }
+  hut:     () => { ton(220, 180, 0.5, 'sawtooth', 0.10); ton(440, 660, 0.4, 'sine', 0.14, 0.15); }
 };
 
 /* =====================================================================
@@ -1926,7 +2479,19 @@ function abzeichenPruefen(vorher){
   }
 }
 
+/* Wenn gerade ein Spiel läuft, wartet das Abzeichen höflich, bis das
+   Spielfenster zu ist. Sonst würde es mitten im Spiel alles blockieren. */
+let wartendesAbzeichen = null;
+
 function abzeichenZeigen(a){
+  const spielFenster = $('#spiel-overlay');
+  if (spielFenster && spielFenster.classList.contains('offen')){
+    wartendesAbzeichen = a;
+    toastZeigen(`${a.icon} Neues Abzeichen: ${a.titel}!`);
+    konfettiStarten(120);
+    KLANG.fanfare();
+    return;
+  }
   $('#abzeichen-kreis').textContent = a.icon;
   $('#abzeichen-titel').textContent = a.titel;
   $('#abzeichen-text').textContent = a.text;
@@ -1998,9 +2563,18 @@ function overlayOeffnen(ov){
 
 function overlaySchliessen(ov){
   if (!ov || !ov.classList.contains('offen')) return;   // war gar nicht offen
+  // Läuft gerade ein Spiel? Dann erst alle Zeitgeber stoppen.
+  if (ov.id === 'spiel-overlay' && typeof modulAufraeumen === 'function') modulAufraeumen();
   ov.classList.remove('offen');
   if (!$$('.overlay.offen').length) document.body.style.overflow = '';
   if (letzterFokus && letzterFokus.focus && document.contains(letzterFokus)) letzterFokus.focus();
+
+  // Ein Abzeichen, das während des Spiels wartete, wird jetzt gefeiert
+  if (ov.id === 'spiel-overlay' && wartendesAbzeichen){
+    const a = wartendesAbzeichen;
+    wartendesAbzeichen = null;
+    setTimeout(() => abzeichenZeigen(a), 420);
+  }
 }
 
 /* Mit Escape schließen, mit Tab im Dialog bleiben */
@@ -2206,22 +2780,21 @@ function hutErgebnisZeigen(){
    TEIL M — KACHELN UND WISSENSKARTEN
    ===================================================================== */
 
-/* Baut eine Platzhalter-Kachel */
-function kachelHtml(k){
+/* Baut eine Kachel mit Startknopf. art = spiel, quiz oder test */
+function kachelHtml(k, art){
   return `
-    <article class="kachel">
+    <article class="kachel kachel--spiel" data-kachel="${k.id}">
       <span class="kachel-icon" aria-hidden="true">${k.icon}</span>
       <h3>${k.titel}</h3>
       <p>${k.text}</p>
-      <p class="platzhalter-hinweis">${k.hinweis}</p>
-      <span class="bald">Kommt bald</span>
+      <button type="button" class="knopf spiel-start" data-start="${art}:${k.id}">${k.knopf}</button>
     </article>`;
 }
 
 function kachelnBauen(){
-  $('#spiele-raster').innerHTML = SPIELE.map(kachelHtml).join('');
-  $('#quiz-raster').innerHTML   = QUIZZE.map(kachelHtml).join('');
-  $('#tests-raster').innerHTML  = TESTS_EXTRA.map(kachelHtml).join('');
+  $('#spiele-raster').innerHTML = SPIELE.map(k => kachelHtml(k, 'spiel')).join('');
+  $('#quiz-raster').innerHTML   = QUIZZE.map(k => kachelHtml(k, 'quiz')).join('');
+  $('#tests-raster').innerHTML  = TESTS_EXTRA.map(k => kachelHtml(k, 'test')).join('');
 
   $('#wissen-raster').innerHTML = WISSEN.map(w => `
     <article class="wissen-karte pergament">
@@ -2242,6 +2815,8 @@ function seiteStarten(){
   hausWahlBauen();
   hutBauen();
   kachelnBauen();
+  kachelnVerknuepfen();
+  $('#spiel-schliessen').addEventListener('click', modulSchliessen);
   funkenCanvasGroesse();
   konfettiGroesse();
 
@@ -2289,6 +2864,1039 @@ function seiteStarten(){
 if (document.readyState === 'loading')
   document.addEventListener('DOMContentLoaded', seiteStarten);
 else seiteStarten();
+</script>
+
+<script>
+/* =====================================================================
+   TEIL O — RAHMEN FÜR SPIELE, QUIZ UND TESTS
+   Alle Module laufen im selben Dialogfenster. Jedes Modul kann eine
+   Aufräum-Funktion zurückgeben, damit keine Zeitgeber weiterlaufen.
+   ===================================================================== */
+let aktivesModul = null;
+
+function hudSetzen(html){ $('#spiel-hud').innerHTML = html; }
+
+/* Baut die Knopfleiste unten im Dialog */
+function fussSetzen(knoepfe){
+  const fuss = $('#spiel-fuss');
+  fuss.innerHTML = '';
+  (knoepfe || []).forEach(k => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'knopf' + (k.geist ? ' knopf--geist' : '');
+    b.textContent = k.text;
+    b.addEventListener('click', k.tu);
+    fuss.appendChild(b);
+  });
+}
+
+/* Öffnet ein Modul. aufbau(bereich) darf { abbau } zurückgeben. */
+function modulOeffnen(titel, aufbau){
+  modulAufraeumen();
+  $('#spiel-titel').textContent = titel;
+  hudSetzen('');
+  fussSetzen([]);
+  const bereich = $('#spiel-bereich');
+  bereich.innerHTML = '';
+  if (!$('#spiel-overlay').classList.contains('offen')) overlayOeffnen($('#spiel-overlay'));
+  aktivesModul = aufbau(bereich) || {};
+}
+
+/* Stoppt alle Zeitgeber des laufenden Moduls */
+function modulAufraeumen(){
+  if (aktivesModul && typeof aktivesModul.abbau === 'function'){
+    try { aktivesModul.abbau(); } catch (e) { /* egal */ }
+  }
+  aktivesModul = null;
+}
+
+function modulSchliessen(){
+  modulAufraeumen();
+  overlaySchliessen($('#spiel-overlay'));
+}
+
+/* Einheitlicher Endbildschirm */
+function modulEnde(bereich, icon, titel, text, punkte, nochmal){
+  bereich.innerHTML =
+    `<div class="spiel-tafel">
+       <span class="gross" aria-hidden="true">${icon}</span>
+       <h3>${sicher(titel)}</h3>
+       <p>${text}</p>
+       ${punkte > 0 ? `<p style="font-family:'Cinzel',serif; font-weight:900; color:#7f0909; font-size:1.3rem">
+          + ${punkte} Hauspunkte</p>` : ''}
+     </div>`;
+  hudSetzen('');
+  const knoepfe = [];
+  if (nochmal) knoepfe.push({ text: 'Nochmal', tu: nochmal });
+  knoepfe.push({ text: 'Fertig', geist: true, tu: modulSchliessen });
+  fussSetzen(knoepfe);
+  if (punkte > 0){
+    punkteGeben(punkte, null, 'Geschafft!');
+    if (punkte >= 20) konfettiStarten(110);
+  } else {
+    KLANG.falsch();
+  }
+}
+
+/* Merkt sich den Bestwert dieses Besuchs und zeigt ihn auf der Kachel */
+function bestwertMerken(id, wert, einheit){
+  const alt = window.HP.bestwerte[id];
+  if (alt === undefined || wert > alt.wert){
+    window.HP.bestwerte[id] = { wert, einheit };
+    const kachel = document.querySelector(`[data-kachel="${id}"]`);
+    if (kachel){
+      let chip = kachel.querySelector('.bestwert');
+      if (!chip){
+        chip = document.createElement('span');
+        chip.className = 'bestwert';
+        chip.setAttribute('aria-label', 'Bestwert');
+        kachel.appendChild(chip);
+      }
+      chip.textContent = `🏅 ${wert} ${einheit}`;
+      chip.title = 'Dein Bestwert in diesem Besuch';
+    }
+    return true;
+  }
+  return false;
+}
+
+/* Mischt ein Feld zufällig durch (Fisher-Yates) */
+function mischen(feld){
+  const k = feld.slice();
+  for (let i = k.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [k[i], k[j]] = [k[j], k[i]];
+  }
+  return k;
+}
+
+/* =====================================================================
+   TEIL P — SPIEL 1: MAGISCHES MEMORY
+   ===================================================================== */
+function spielMemory(bereich){
+  const paare = MEMORY_PAARE;
+  const karten = mischen([...paare, ...paare].map((k, i) => ({ ...k, nr: i })));
+  let offen = [], zuege = 0, gefunden = 0, sperre = false;
+  let sekunden = 0, uhr = null;
+
+  bereich.innerHTML = `<div class="memory-raster" id="mem-raster" role="group"
+        aria-label="Memory-Spielfeld mit ${karten.length} Karten"></div>
+      <p class="spiel-hinweis">Finde alle sechs Paare. Je weniger Züge, desto mehr Punkte!</p>`;
+
+  const raster = $('#mem-raster', bereich);
+  raster.innerHTML = karten.map((k, i) => `
+    <button class="mem-karte" data-i="${i}" aria-label="Karte ${i + 1}, verdeckt">
+      <span class="mem-innen">
+        <span class="mem-seite mem-vorne" aria-hidden="true">✦</span>
+        <span class="mem-seite mem-hinten" aria-hidden="true">${k.icon}</span>
+      </span>
+    </button>`).join('');
+
+  function hud(){
+    hudSetzen(`<span>Züge: <b>${zuege}</b></span>
+               <span>Paare: <b>${gefunden}</b>/6</span>
+               <span>Zeit: <b>${sekunden}</b>s</span>`);
+  }
+  hud();
+  uhr = setInterval(() => { sekunden++; hud(); }, 1000);
+
+  raster.addEventListener('click', (e) => {
+    const knopf = e.target.closest('.mem-karte');
+    if (!knopf || sperre) return;
+    const i = +knopf.dataset.i;
+    if (knopf.classList.contains('gefunden') || knopf.classList.contains('offen')) return;
+
+    knopf.classList.add('offen');
+    knopf.setAttribute('aria-label', `Karte ${i + 1}, ${karten[i].name}`);
+    KLANG.klick();
+    offen.push({ knopf, i });
+
+    if (offen.length === 2){
+      zuege++; hud(); sperre = true;
+      const [a, b] = offen;
+      if (karten[a.i].icon === karten[b.i].icon){
+        setTimeout(() => {
+          a.knopf.classList.add('gefunden'); b.knopf.classList.add('gefunden');
+          a.knopf.classList.remove('offen'); b.knopf.classList.remove('offen');
+          a.knopf.disabled = true; b.knopf.disabled = true;
+          gefunden++; hud(); offen = []; sperre = false;
+          KLANG.richtig();
+          if (gefunden === paare.length){
+            clearInterval(uhr);
+            const punkte = Math.max(12, 44 - zuege * 2);
+            bestwertMerken('memory', Math.max(0, 60 - zuege), 'Pkt.');
+            modulEnde(bereich, '🎉', 'Alle Paare gefunden!',
+              `Du hast <strong>${zuege} Züge</strong> und <strong>${sekunden} Sekunden</strong> gebraucht.`,
+              punkte, () => modulOeffnen('Magisches Memory', spielMemory));
+          }
+        }, 380);
+      } else {
+        setTimeout(() => {
+          a.knopf.classList.remove('offen'); b.knopf.classList.remove('offen');
+          a.knopf.setAttribute('aria-label', `Karte ${a.i + 1}, verdeckt`);
+          b.knopf.setAttribute('aria-label', `Karte ${b.i + 1}, verdeckt`);
+          offen = []; sperre = false;
+        }, 750);
+      }
+    }
+  });
+
+  fussSetzen([{ text: 'Neu mischen', geist: true, tu: () => modulOeffnen('Magisches Memory', spielMemory) }]);
+  return { abbau: () => clearInterval(uhr) };
+}
+
+/* =====================================================================
+   TEIL Q — SPIEL 2: ZAUBERSPRUCH-DUELL
+   ===================================================================== */
+function spielDuell(bereich){
+  const runden = mischen(DUELL_RUNDEN).slice(0, 10);
+  const alleNamen = ZAUBER.map(z => z.name);
+  let nr = 0, treffer = 0, leben = 3, uhr = null, restZeit = 0;
+  const ZEIT = 7000;   // Millisekunden pro Runde
+
+  function hud(){
+    hudSetzen(`<span>Runde: <b>${Math.min(nr + 1, runden.length)}</b>/${runden.length}</span>
+               <span>Treffer: <b>${treffer}</b></span>
+               <span class="herzen" aria-label="${leben} Leben">${'❤️'.repeat(leben)}${'🖤'.repeat(3 - leben)}</span>`);
+  }
+
+  function runde(){
+    if (nr >= runden.length || leben <= 0) return ende();
+    const r = runden[nr];
+    const falsche = mischen(alleNamen.filter(n => n !== r.richtig)).slice(0, 3);
+    const optionen = mischen([r.richtig, ...falsche]);
+
+    bereich.innerHTML = `
+      <div class="duell-szene">
+        <p class="duell-lage">${r.lage}</p>
+        <p class="duell-spruch">${sicher(r.spruch)}</p>
+      </div>
+      <div class="duell-zeit" aria-hidden="true"><i id="duell-balken"></i></div>
+      <p class="hut-zaehler" style="margin-bottom:10px">Welcher Zauber hilft jetzt?</p>
+      <div class="duell-optionen" role="group" aria-label="Antwortmöglichkeiten">
+        ${optionen.map(o => `<button class="duell-opt" data-name="${sicher(o)}">${sicher(o)}</button>`).join('')}
+      </div>`;
+    hud();
+
+    const balken = $('#duell-balken', bereich);
+    restZeit = ZEIT;
+    const takt = 60;
+    clearInterval(uhr);
+    uhr = setInterval(() => {
+      restZeit -= takt;
+      balken.style.width = Math.max(0, (restZeit / ZEIT) * 100) + '%';
+      if (restZeit <= 0){ clearInterval(uhr); antwort(null); }
+    }, takt);
+
+    $$('.duell-opt', bereich).forEach(b =>
+      b.addEventListener('click', () => antwort(b)));
+
+    function antwort(knopf){
+      clearInterval(uhr);
+      const richtigerKnopf = $$('.duell-opt', bereich).find(b => b.dataset.name === r.richtig);
+      $$('.duell-opt', bereich).forEach(b => b.disabled = true);
+      const korrekt = knopf && knopf.dataset.name === r.richtig;
+
+      if (korrekt){ knopf.classList.add('richtig'); treffer++; KLANG.richtig(); }
+      else {
+        if (knopf) knopf.classList.add('falsch');
+        if (richtigerKnopf) richtigerKnopf.classList.add('richtig');
+        leben--; KLANG.falsch();
+      }
+      hud();
+      const hinweis = document.createElement('p');
+      hinweis.className = 'quiz-erklaerung';
+      hinweis.innerHTML = (korrekt ? '✅ ' : '💡 ') + r.erklaerung;
+      bereich.appendChild(hinweis);
+
+      setTimeout(() => { nr++; runde(); }, korrekt ? 1100 : 1900);
+    }
+  }
+
+  function ende(){
+    clearInterval(uhr);
+    const punkte = treffer * 4;
+    bestwertMerken('duell', treffer, 'Treffer');
+    const geschafft = leben > 0;
+    modulEnde(bereich, geschafft ? '🏅' : '💫',
+      geschafft ? 'Duell gewonnen!' : 'Duell verloren',
+      `Du hast <strong>${treffer} von ${runden.length}</strong> Gegenzaubern richtig gewählt.`,
+      punkte, () => modulOeffnen('Zauberspruch-Duell', spielDuell));
+  }
+
+  runde();
+  return { abbau: () => clearInterval(uhr) };
+}
+
+/* =====================================================================
+   TEIL R — SPIEL 3: FANG DEN SCHNATZ
+   ===================================================================== */
+const SVG_SCHNATZ = `
+  <svg viewBox="0 0 52 32" aria-hidden="true">
+    <path d="M20 16C13 5 5 4 1 9c4 1 6 5 7 8-3 1-5 4-5 7 6 2 13-1 17-8z" fill="rgba(255,246,214,.9)" stroke="#e8d59a"/>
+    <path d="M32 16c7-11 15-12 19-7-4 1-6 5-7 8 3 1 5 4 5 7-6 2-13-1-17-8z" fill="rgba(255,246,214,.9)" stroke="#e8d59a"/>
+    <circle cx="26" cy="16" r="9" fill="#e8bf46" stroke="#8a6a12" stroke-width="1.2"/>
+    <circle cx="22.5" cy="12.5" r="2.6" fill="#fff8dc" opacity=".85"/>
+  </svg>`;
+const SVG_KLATSCHER = `
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <circle cx="20" cy="20" r="14" fill="#2b2b33" stroke="#5a5a66" stroke-width="2"/>
+    <circle cx="15" cy="15" r="3.5" fill="#4a4a56"/>
+    <path d="M20 6v-4M20 34v4M6 20H2M34 20h4" stroke="#7a3b3b" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>`;
+
+function spielSchnatz(bereich){
+  let treffer = 0, fehler = 0, rest = 30;
+  let uhr = null, spawner = null;
+  const objekte = new Set();
+
+  bereich.innerHTML = `
+    <div class="schnatz-feld" id="schnatz-feld" role="application"
+         aria-label="Spielfeld: klicke die goldenen Schnatze, meide die schwarzen Klatscher"></div>
+    <p class="spiel-hinweis">Klicke jeden goldenen Schnatz. Die schwarzen Klatscher kosten dich Punkte!</p>`;
+  const feld = $('#schnatz-feld', bereich);
+
+  function hud(){
+    hudSetzen(`<span>Schnatze: <b>${treffer}</b></span>
+               <span>Klatscher: <b>${fehler}</b></span>
+               <span>Zeit: <b>${rest}</b>s</span>`);
+  }
+  hud();
+
+  function neuesObjekt(){
+    const istKlatscher = Math.random() < 0.26;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'flug-objekt' + (istKlatscher ? ' klatscher' : '');
+    b.innerHTML = istKlatscher ? SVG_KLATSCHER : SVG_SCHNATZ;
+    b.setAttribute('aria-label', istKlatscher ? 'Klatscher – nicht anklicken' : 'Goldener Schnatz – fangen!');
+    const breite = feld.clientWidth - 60, hoehe = feld.clientHeight - 60;
+    b.style.left = Math.round(zufall(4, Math.max(10, breite))) + 'px';
+    b.style.top  = Math.round(zufall(4, Math.max(10, hoehe))) + 'px';
+
+    b.addEventListener('click', () => {
+      if (!b.isConnected) return;
+      if (istKlatscher){
+        fehler++; KLANG.falsch();
+        feld.classList.add('getroffen');
+        setTimeout(() => feld.classList.remove('getroffen'), 320);
+      } else {
+        treffer++; KLANG.treffer();
+      }
+      hud();
+      b.remove(); objekte.delete(b);
+    });
+
+    feld.appendChild(b);
+    objekte.add(b);
+    setTimeout(() => { b.remove(); objekte.delete(b); }, istKlatscher ? 1700 : 1500);
+  }
+
+  spawner = setInterval(neuesObjekt, 620);
+  neuesObjekt();
+
+  uhr = setInterval(() => {
+    rest--; hud();
+    if (rest <= 3 && rest > 0) KLANG.tick();
+    if (rest <= 0) ende();
+  }, 1000);
+
+  function ende(){
+    clearInterval(uhr); clearInterval(spawner);
+    objekte.forEach(o => o.remove()); objekte.clear();
+    const ergebnis = Math.max(0, treffer * 2 - fehler * 2);
+    bestwertMerken('schnatz', treffer, 'Schnatze');
+    modulEnde(bereich, treffer >= 20 ? '🏆' : '🧹', 'Zeit abgelaufen!',
+      `Du hast <strong>${treffer} Schnatze</strong> gefangen und <strong>${fehler} Klatscher</strong> erwischt.`,
+      ergebnis, () => modulOeffnen('Fang den Schnatz', spielSchnatz));
+  }
+
+  fussSetzen([{ text: 'Abbrechen', geist: true, tu: modulSchliessen }]);
+  return { abbau: () => { clearInterval(uhr); clearInterval(spawner); objekte.forEach(o => o.remove()); } };
+}
+
+/* =====================================================================
+   TEIL S — SPIEL 4: ZAUBERTRANK BRAUEN
+   ===================================================================== */
+function spielTrank(bereich){
+  let stufe = 0, leben = 3, punkteGesamt = 0;
+  let rezept = [], schritt = 0, zeigeTimer = null, spicker = true, laeuft = false;
+
+  bereich.innerHTML = `
+    <div class="trank-buehne">
+      <svg class="kessel" viewBox="0 0 120 100" aria-hidden="true">
+        <ellipse class="blubber" cx="48" cy="40" rx="7" ry="7" fill="#8fe0c0" opacity=".7"/>
+        <ellipse class="blubber" cx="70" cy="36" rx="5" ry="5" fill="#8fe0c0" opacity=".55" style="animation-delay:.8s"/>
+        <path d="M18 46h84c0 26-16 42-42 42S18 72 18 46z" fill="#3a3a44" stroke="#22222a" stroke-width="2"/>
+        <ellipse cx="60" cy="46" rx="42" ry="10" fill="#2b8f6a"/>
+        <ellipse cx="60" cy="46" rx="42" ry="10" fill="none" stroke="#22222a" stroke-width="2"/>
+        <path d="M14 50c-6 0-6 10 0 10M106 50c6 0 6 10 0 10" fill="none" stroke="#22222a" stroke-width="4"/>
+      </svg>
+      <p class="hut-zaehler" id="trank-lage">Merk dir das Rezept!</p>
+      <div class="rezept" id="trank-rezept"></div>
+      <div class="zutaten-raster" id="trank-zutaten"></div>
+    </div>
+    <p class="spiel-hinweis">Das Rezept verschwindet nach ein paar Sekunden – dann tippst du die Zutaten in der richtigen Reihenfolge an.</p>`;
+
+  const rezeptBox = $('#trank-rezept', bereich);
+  const zutatenBox = $('#trank-zutaten', bereich);
+  const lage = $('#trank-lage', bereich);
+
+  zutatenBox.innerHTML = TRANK_ZUTATEN.map((z, i) => `
+    <button class="zutat" data-i="${i}" aria-label="${z.name} in den Kessel geben">
+      <span aria-hidden="true">${z.icon}</span><small>${z.name}</small>
+    </button>`).join('');
+
+  function hud(){
+    hudSetzen(`<span>Trank: <b>${TRANK_STUFEN[Math.min(stufe, 3)].name}</b></span>
+               <span>Stufe: <b>${Math.min(stufe + 1, 4)}</b>/4</span>
+               <span class="herzen" aria-label="${leben} Leben">${'❤️'.repeat(leben)}${'🖤'.repeat(3 - leben)}</span>`);
+  }
+
+  function rezeptZeigen(dauer, danach){
+    laeuft = false;
+    rezeptBox.classList.remove('verdeckt');
+    rezeptBox.innerHTML = rezept.map((i, n) =>
+      `<span class="schritt" aria-label="Schritt ${n + 1}: ${TRANK_ZUTATEN[i].name}">${TRANK_ZUTATEN[i].icon}</span>`).join('');
+    clearTimeout(zeigeTimer);
+    zeigeTimer = setTimeout(() => {
+      rezeptBox.classList.add('verdeckt');
+      rezeptBox.innerHTML = '<span>Rezept verdeckt – jetzt bist du dran!</span>';
+      laeuft = true;
+      if (danach) danach();
+    }, dauer);
+  }
+
+  function neueStufe(){
+    if (stufe >= TRANK_STUFEN.length) return ende(true);
+    const laenge = TRANK_STUFEN[stufe].laenge;
+    rezept = Array.from({ length: laenge }, () => Math.floor(Math.random() * TRANK_ZUTATEN.length));
+    schritt = 0; spicker = true;
+    hud();
+    lage.textContent = `Merk dir das Rezept für den ${TRANK_STUFEN[stufe].name}!`;
+    $$('.zutat', bereich).forEach(b => b.classList.remove('richtig', 'falsch'));
+    fussSetzen([
+      { text: 'Spickzettel (1×)', geist: true, tu: spickzettel },
+      { text: 'Abbrechen', geist: true, tu: modulSchliessen }
+    ]);
+    rezeptZeigen(1400 + laenge * 800, () => { lage.textContent = 'Jetzt in der richtigen Reihenfolge antippen.'; });
+  }
+
+  function spickzettel(){
+    if (!spicker || !laeuft) return;
+    spicker = false;
+    fussSetzen([{ text: 'Abbrechen', geist: true, tu: modulSchliessen }]);
+    rezeptZeigen(1800, () => { lage.textContent = 'Weiter geht’s!'; });
+  }
+
+  zutatenBox.addEventListener('click', (e) => {
+    const b = e.target.closest('.zutat');
+    if (!b || !laeuft) return;
+    const i = +b.dataset.i;
+    if (i === rezept[schritt]){
+      b.classList.add('richtig');
+      setTimeout(() => b.classList.remove('richtig'), 350);
+      KLANG.treffer();
+      schritt++;
+      lage.textContent = `${schritt} von ${rezept.length} Zutaten drin.`;
+      if (schritt >= rezept.length){
+        laeuft = false;
+        punkteGesamt += 10;
+        stufe++;
+        KLANG.richtig();
+        lage.textContent = 'Perfekt gebraut!';
+        setTimeout(neueStufe, 900);
+      }
+    } else {
+      b.classList.add('falsch');
+      setTimeout(() => b.classList.remove('falsch'), 450);
+      leben--; KLANG.falsch(); hud();
+      lage.textContent = 'Ups, falsche Zutat! Das Rezept kommt noch einmal.';
+      if (leben <= 0){ laeuft = false; return ende(false); }
+      schritt = 0;
+      rezeptZeigen(1600, () => { lage.textContent = 'Neuer Versuch – von vorn.'; });
+    }
+  });
+
+  function ende(gewonnen){
+    clearTimeout(zeigeTimer);
+    bestwertMerken('trank', stufe, 'Stufen');
+    modulEnde(bereich, gewonnen ? '🧪' : '💨',
+      gewonnen ? 'Meisterbraut!' : 'Der Kessel qualmt …',
+      gewonnen
+        ? 'Du hast alle vier Tränke fehlerfrei genug gebraut. Professor Slughorn wäre begeistert.'
+        : `Du hast <strong>${stufe} von 4</strong> Tränken geschafft. Nächstes Mal klappt es besser!`,
+      punkteGesamt, () => modulOeffnen('Zaubertrank brauen', spielTrank));
+  }
+
+  neueStufe();
+  return { abbau: () => clearTimeout(zeigeTimer) };
+}
+
+/* =====================================================================
+   TEIL T — SPIEL 5: WORTSUCHE DER ZAUBER
+   ===================================================================== */
+function spielWortsuche(bereich){
+  const N = 10;
+  const BUCHSTABEN = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const richtungen = [[1, 0], [0, 1], [1, 1], [1, -1]];
+  let gitter, platzierungen, gefunden = [], startZelle = null;
+  let sekunden = 0, uhr = null;
+
+  /* Wörter ins Gitter legen */
+  function gitterBauen(){
+    gitter = Array.from({ length: N }, () => Array(N).fill(''));
+    platzierungen = [];
+    for (const wort of WORTSUCHE_WOERTER){
+      let gelegt = false;
+      for (let versuch = 0; versuch < 300 && !gelegt; versuch++){
+        const [dx, dy] = richtungen[Math.floor(Math.random() * richtungen.length)];
+        const x0 = Math.floor(Math.random() * N), y0 = Math.floor(Math.random() * N);
+        const xEnd = x0 + dx * (wort.length - 1), yEnd = y0 + dy * (wort.length - 1);
+        if (xEnd < 0 || xEnd >= N || yEnd < 0 || yEnd >= N) continue;
+        let passt = true;
+        for (let i = 0; i < wort.length; i++){
+          const c = gitter[y0 + dy * i][x0 + dx * i];
+          if (c && c !== wort[i]){ passt = false; break; }
+        }
+        if (!passt) continue;
+        const zellen = [];
+        for (let i = 0; i < wort.length; i++){
+          gitter[y0 + dy * i][x0 + dx * i] = wort[i];
+          zellen.push([x0 + dx * i, y0 + dy * i]);
+        }
+        platzierungen.push({ wort, zellen });
+        gelegt = true;
+      }
+    }
+    // Restliche Felder mit Zufallsbuchstaben füllen
+    for (let y = 0; y < N; y++)
+      for (let x = 0; x < N; x++)
+        if (!gitter[y][x]) gitter[y][x] = BUCHSTABEN[Math.floor(Math.random() * 26)];
+  }
+  gitterBauen();
+
+  bereich.innerHTML = `
+    <div class="wort-gitter" id="wort-gitter" style="grid-template-columns:repeat(${N},1fr)"
+         role="group" aria-label="Buchstabengitter"></div>
+    <div class="wort-liste" id="wort-liste"></div>
+    <p class="spiel-hinweis">Tippe den <strong>ersten</strong> und dann den <strong>letzten</strong> Buchstaben eines Zauberspruchs an.</p>`;
+
+  const gitterBox = $('#wort-gitter', bereich);
+  gitterBox.innerHTML = gitter.map((zeile, y) =>
+    zeile.map((c, x) =>
+      `<button class="wort-zelle" data-x="${x}" data-y="${y}"
+               aria-label="Zeile ${y + 1}, Spalte ${x + 1}, Buchstabe ${c}">${c}</button>`).join('')
+  ).join('');
+
+  function listeZeigen(){
+    $('#wort-liste', bereich).innerHTML = WORTSUCHE_WOERTER.map(w =>
+      `<span class="${gefunden.includes(w) ? 'weg' : ''}">${w}</span>`).join('');
+  }
+  function hud(){
+    hudSetzen(`<span>Gefunden: <b>${gefunden.length}</b>/${WORTSUCHE_WOERTER.length}</span>
+               <span>Zeit: <b>${sekunden}</b>s</span>`);
+  }
+  listeZeigen(); hud();
+  uhr = setInterval(() => { sekunden++; hud(); }, 1000);
+
+  gitterBox.addEventListener('click', (e) => {
+    const zelle = e.target.closest('.wort-zelle');
+    if (!zelle) return;
+    const x = +zelle.dataset.x, y = +zelle.dataset.y;
+
+    if (!startZelle){
+      startZelle = { x, y, el: zelle };
+      zelle.classList.add('start');
+      KLANG.klick();
+      return;
+    }
+    startZelle.el.classList.remove('start');
+    const sx = startZelle.x, sy = startZelle.y;
+    startZelle = null;
+
+    const dx = Math.sign(x - sx), dy = Math.sign(y - sy);
+    const laenge = Math.max(Math.abs(x - sx), Math.abs(y - sy)) + 1;
+    // Nur gerade Linien (waagerecht, senkrecht oder diagonal) zählen
+    const gerade = (x === sx || y === sy || Math.abs(x - sx) === Math.abs(y - sy));
+    if (!gerade){ KLANG.falsch(); return; }
+
+    let wort = '', zellen = [];
+    for (let i = 0; i < laenge; i++){
+      const cx = sx + dx * i, cy = sy + dy * i;
+      wort += gitter[cy][cx];
+      zellen.push([cx, cy]);
+    }
+    const rueckwaerts = wort.split('').reverse().join('');
+    const treffer = WORTSUCHE_WOERTER.find(w =>
+      !gefunden.includes(w) && (w === wort || w === rueckwaerts));
+
+    if (treffer){
+      gefunden.push(treffer);
+      zellen.forEach(([cx, cy]) =>
+        gitterBox.querySelector(`[data-x="${cx}"][data-y="${cy}"]`).classList.add('gefunden'));
+      KLANG.richtig();
+      listeZeigen(); hud();
+      if (gefunden.length === WORTSUCHE_WOERTER.length){
+        clearInterval(uhr);
+        const punkte = Math.max(18, 60 - sekunden);
+        bestwertMerken('wortsuche', Math.max(0, 300 - sekunden), 'Pkt.');
+        modulEnde(bereich, '🔤', 'Alle Zauber gefunden!',
+          `Du hast <strong>${sekunden} Sekunden</strong> gebraucht. Stark!`,
+          punkte, () => modulOeffnen('Wortsuche der Zauber', spielWortsuche));
+      }
+    } else {
+      KLANG.falsch();
+    }
+  });
+
+  fussSetzen([
+    { text: 'Neues Gitter', geist: true, tu: () => modulOeffnen('Wortsuche der Zauber', spielWortsuche) },
+    { text: 'Lösung zeigen', geist: true, tu: () => {
+        platzierungen.forEach(p => p.zellen.forEach(([cx, cy]) =>
+          gitterBox.querySelector(`[data-x="${cx}"][data-y="${cy}"]`).classList.add('gefunden')));
+        toastZeigen('Hier sind alle Wörter – dafür gibt es aber keine Punkte.');
+      } }
+  ]);
+  return { abbau: () => clearInterval(uhr) };
+}
+
+/* =====================================================================
+   TEIL U — SPIEL 6: LICHT IM LABYRINTH
+   ===================================================================== */
+function spielLabyrinth(bereich){
+  const N = 13;                    // ungerade Größe
+  let feld, spielerX = 1, spielerY = 1, zuege = 0, kerzen = [], gesammelt = 0;
+  let lichtWeite = 2, fertig = false;
+
+  /* Labyrinth mit dem Rückwärts-Verfahren bauen */
+  function labyrinthBauen(){
+    const g = Array.from({ length: N }, () => Array(N).fill(1));
+    const stapel = [[1, 1]];
+    g[1][1] = 0;
+    while (stapel.length){
+      const [x, y] = stapel[stapel.length - 1];
+      const nachbarn = [[x + 2, y], [x - 2, y], [x, y + 2], [x, y - 2]]
+        .filter(([nx, ny]) => nx > 0 && ny > 0 && nx < N - 1 && ny < N - 1 && g[ny][nx] === 1);
+      if (!nachbarn.length){ stapel.pop(); continue; }
+      const [nx, ny] = nachbarn[Math.floor(Math.random() * nachbarn.length)];
+      g[(y + ny) / 2][(x + nx) / 2] = 0;
+      g[ny][nx] = 0;
+      stapel.push([nx, ny]);
+    }
+    return g;
+  }
+  feld = labyrinthBauen();
+
+  /* Drei Kerzen auf freie Felder legen */
+  const frei = [];
+  for (let y = 1; y < N - 1; y++)
+    for (let x = 1; x < N - 1; x++)
+      if (feld[y][x] === 0 && !(x < 3 && y < 3) && !(x > N - 4 && y > N - 4)) frei.push([x, y]);
+  kerzen = mischen(frei).slice(0, 3).map(([x, y]) => ({ x, y, weg: false }));
+
+  bereich.innerHTML = `
+    <div class="lab-feld" id="lab-feld" style="grid-template-columns:repeat(${N},1fr)"
+         role="application" aria-label="Labyrinth. Bewege dich mit den Pfeiltasten."></div>
+    <div class="lab-steuerung" aria-label="Steuerung">
+      <span class="leer"></span>
+      <button type="button" data-r="hoch" aria-label="nach oben">▲</button>
+      <span class="leer"></span>
+      <button type="button" data-r="links" aria-label="nach links">◀</button>
+      <button type="button" data-r="runter" aria-label="nach unten">▼</button>
+      <button type="button" data-r="rechts" aria-label="nach rechts">▶</button>
+    </div>
+    <p class="spiel-hinweis">Dein Lumos-Licht reicht nur ein paar Felder weit.
+       Sammle die Kerzen 🕯️ ein – jede macht dein Licht heller. Ziel ist das grüne Feld.</p>`;
+
+  const box = $('#lab-feld', bereich);
+  box.innerHTML = Array.from({ length: N * N }, (_, i) => {
+    const x = i % N, y = Math.floor(i / N);
+    return `<div class="lab-zelle" data-x="${x}" data-y="${y}"></div>`;
+  }).join('');
+  const zellen = $$('.lab-zelle', box);
+
+  function hud(){
+    hudSetzen(`<span>Züge: <b>${zuege}</b></span>
+               <span>Kerzen: <b>${gesammelt}</b>/3</span>
+               <span>Licht: <b>${lichtWeite}</b></span>`);
+  }
+
+  function zeichnen(){
+    for (const z of zellen){
+      const x = +z.dataset.x, y = +z.dataset.y;
+      const abstand = Math.max(Math.abs(x - spielerX), Math.abs(y - spielerY));
+      z.className = 'lab-zelle ' + (feld[y][x] === 1 ? 'lab-wand' : 'lab-weg');
+      z.textContent = '';
+      if (x === N - 2 && y === N - 2) z.classList.add('lab-ziel');
+      const kerze = kerzen.find(k => k.x === x && k.y === y && !k.weg);
+      if (kerze && abstand <= lichtWeite) z.textContent = '🕯️';
+      if (x === spielerX && y === spielerY){ z.classList.add('lab-spieler'); z.textContent = '✦'; }
+      else if (abstand > lichtWeite + 1) z.classList.add('dunkel');
+      else if (abstand > lichtWeite) z.classList.add('halb');
+    }
+  }
+
+  function bewegen(dx, dy){
+    if (fertig) return;
+    const nx = spielerX + dx, ny = spielerY + dy;
+    if (nx < 0 || ny < 0 || nx >= N || ny >= N || feld[ny][nx] === 1){ KLANG.falsch(); return; }
+    spielerX = nx; spielerY = ny; zuege++;
+    KLANG.klick();
+
+    const kerze = kerzen.find(k => k.x === nx && k.y === ny && !k.weg);
+    if (kerze){
+      kerze.weg = true; gesammelt++;
+      lichtWeite = Math.min(5, lichtWeite + 1);
+      KLANG.treffer();
+      toastZeigen('Kerze gefunden – dein Licht wird heller! 🕯️');
+    }
+    hud(); zeichnen();
+
+    if (nx === N - 2 && ny === N - 2){
+      fertig = true;
+      const punkte = 25 + gesammelt * 5;
+      bestwertMerken('labyrinth', Math.max(0, 300 - zuege), 'Pkt.');
+      setTimeout(() => modulEnde(bereich, '🕯️', 'Ausgang gefunden!',
+        `Du hast <strong>${zuege} Züge</strong> gebraucht und <strong>${gesammelt} von 3 Kerzen</strong> gesammelt.`,
+        punkte, () => modulOeffnen('Licht im Labyrinth', spielLabyrinth)), 300);
+    }
+  }
+
+  const tasten = {
+    ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0],
+    w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0],
+    hoch: [0, -1], runter: [0, 1], links: [-1, 0], rechts: [1, 0]
+  };
+  function beiTaste(e){
+    const r = tasten[e.key];
+    if (!r) return;
+    e.preventDefault();
+    bewegen(r[0], r[1]);
+  }
+  document.addEventListener('keydown', beiTaste);
+
+  bereich.querySelector('.lab-steuerung').addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-r]');
+    if (!b) return;
+    const r = tasten[b.dataset.r];
+    bewegen(r[0], r[1]);
+  });
+
+  hud(); zeichnen();
+  fussSetzen([{ text: 'Neues Labyrinth', geist: true, tu: () => modulOeffnen('Licht im Labyrinth', spielLabyrinth) }]);
+  return { abbau: () => document.removeEventListener('keydown', beiTaste) };
+}
+
+/* Alle Spiele unter ihrer Kennung sammeln */
+const SPIEL_LOGIK = {
+  memory:    spielMemory,
+  duell:     spielDuell,
+  schnatz:   spielSchnatz,
+  trank:     spielTrank,
+  wortsuche: spielWortsuche,
+  labyrinth: spielLabyrinth
+};
+</script>
+
+<script>
+/* =====================================================================
+   TEIL V — DAS WISSENSQUIZ (drei Stufen)
+   ===================================================================== */
+const QUIZ_INFO = {
+  leicht: { titel:'Quiz Stufe 1 · Erstklässler', punkteProFrage:3, icon:'🌱' },
+  mittel: { titel:'Quiz Stufe 2 · ZAG-Prüfung',  punkteProFrage:4, icon:'📜' },
+  schwer: { titel:'Quiz Stufe 3 · UTZ-Prüfung',  punkteProFrage:5, icon:'🦉' }
+};
+
+function quizStarten(stufe){
+  modulOeffnen(QUIZ_INFO[stufe].titel, (bereich) => quizModul(bereich, stufe));
+}
+
+function quizModul(bereich, stufe){
+  const info = QUIZ_INFO[stufe];
+  const fragen = mischen(QUIZ_FRAGEN[stufe]);
+  let nr = 0, richtig = 0;
+
+  function hud(){
+    hudSetzen(`<span>Frage: <b>${Math.min(nr + 1, fragen.length)}</b>/${fragen.length}</span>
+               <span>Richtig: <b>${richtig}</b></span>`);
+  }
+
+  function frageZeigen(){
+    if (nr >= fragen.length) return ende();
+    const q = fragen[nr];
+    // Antworten mischen, richtige Antwort dabei mitnehmen
+    const antworten = mischen(q.a.map((text, i) => ({ text, korrekt: i === q.r })));
+    const prozent = Math.round((nr / fragen.length) * 100);
+    const buchstaben = ['A', 'B', 'C', 'D'];
+
+    bereich.innerHTML = `
+      <div class="hut-fortschritt" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+           aria-valuenow="${prozent}" aria-label="Fortschritt im Quiz"><i style="width:${prozent}%"></i></div>
+      <h3 class="hut-frage">${q.f}</h3>
+      <div class="hut-antworten" role="group" aria-label="Antwortmöglichkeiten">
+        ${antworten.map((a, i) => `
+          <button class="hut-antwort quiz-antwort" data-korrekt="${a.korrekt}">
+            <span class="buchstabe" aria-hidden="true">${buchstaben[i]}</span>${a.text}
+          </button>`).join('')}
+      </div>`;
+    hud();
+    fussSetzen([{ text: 'Quiz abbrechen', geist: true, tu: modulSchliessen }]);
+
+    $$('.quiz-antwort', bereich).forEach(b => b.addEventListener('click', () => {
+      const korrekt = b.dataset.korrekt === 'true';
+      $$('.quiz-antwort', bereich).forEach(x => {
+        x.disabled = true;
+        if (x.dataset.korrekt === 'true') x.classList.add('richtig');
+      });
+      if (!korrekt) b.classList.add('falsch');
+      if (korrekt){ richtig++; KLANG.richtig(); } else KLANG.falsch();
+      hud();
+
+      const erkl = document.createElement('p');
+      erkl.className = 'quiz-erklaerung';
+      erkl.innerHTML = (korrekt ? '✅ Richtig! ' : '❌ Leider nicht. ') + q.e;
+      bereich.appendChild(erkl);
+
+      fussSetzen([{ text: nr + 1 < fragen.length ? 'Nächste Frage →' : 'Ergebnis anzeigen',
+                    tu: () => { nr++; frageZeigen(); } }]);
+    }));
+  }
+
+  function ende(){
+    const punkte = richtig * info.punkteProFrage;
+    bestwertMerken(stufe, richtig, 'richtig');
+    let lob;
+    if (richtig === fragen.length) lob = 'Alles richtig! Das ist Schulsprecher-Niveau. 🏆';
+    else if (richtig >= fragen.length * 0.7) lob = 'Richtig stark! Du kennst dich gut aus.';
+    else if (richtig >= fragen.length * 0.4) lob = 'Solide! Ein bisschen üben, dann sitzt es.';
+    else lob = 'Kein Problem – noch einmal versuchen lohnt sich!';
+    modulEnde(bereich, info.icon, `${richtig} von ${fragen.length} richtig`, lob,
+      punkte, () => modulOeffnen(info.titel, (b) => quizModul(b, stufe)));
+  }
+
+  frageZeigen();
+  return {};
+}
+
+/* =====================================================================
+   TEIL W — TESTS MIT GEWICHTETEN ERGEBNISSEN
+   (Welcher Charakter bist du? / Was ist dein Patronus?)
+   ===================================================================== */
+function testStarten(id){
+  if (id === 'zauberstab') return modulOeffnen(TEST_ZAUBERSTAB.titel, zauberstabModul);
+  const def = TESTS[id];
+  modulOeffnen(def.titel, (bereich) => testModul(bereich, def));
+}
+
+function testModul(bereich, def){
+  const schluessel = Object.keys(def.ergebnisse);
+  const punkte = {};
+  schluessel.forEach(k => punkte[k] = 0);
+  let nr = 0;
+
+  function hud(){
+    hudSetzen(`<span>Frage: <b>${Math.min(nr + 1, def.fragen.length)}</b>/${def.fragen.length}</span>`);
+  }
+
+  function frageZeigen(){
+    if (nr >= def.fragen.length) return ergebnis();
+    const f = def.fragen[nr];
+    const prozent = Math.round((nr / def.fragen.length) * 100);
+    const buchstaben = ['A', 'B', 'C', 'D'];
+
+    bereich.innerHTML = `
+      <div class="hut-fortschritt" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+           aria-valuenow="${prozent}" aria-label="Fortschritt im Test"><i style="width:${prozent}%"></i></div>
+      <h3 class="hut-frage">${f.frage}</h3>
+      <div class="hut-antworten" role="group" aria-label="Antwortmöglichkeiten">
+        ${f.antworten.map((a, i) => `
+          <button class="hut-antwort" data-i="${i}">
+            <span class="buchstabe" aria-hidden="true">${buchstaben[i]}</span>${a.text}
+          </button>`).join('')}
+      </div>`;
+    hud();
+    fussSetzen([{ text: 'Test abbrechen', geist: true, tu: modulSchliessen }]);
+
+    $$('.hut-antwort', bereich).forEach(b => b.addEventListener('click', () => {
+      const w = f.antworten[+b.dataset.i].w;
+      Object.keys(w).forEach(k => { if (punkte[k] !== undefined) punkte[k] += w[k]; });
+      KLANG.klick();
+      nr++; frageZeigen();
+    }));
+  }
+
+  function ergebnis(){
+    const sortiert = schluessel.slice().sort((a, b) => punkte[b] - punkte[a]);
+    const sieger = sortiert[0];
+    const e = def.ergebnisse[sieger];
+    const gesamt = Math.max(1, schluessel.reduce((s, k) => s + punkte[k], 0));
+
+    bereich.innerHTML = `
+      <div class="test-ergebnis">
+        <span class="ergebnis-icon" aria-hidden="true">${e.icon}</span>
+        <p class="unterzeile">${e.zeile}</p>
+        <h3>${e.name}</h3>
+        <p style="max-width:52ch; margin-inline:auto; color:#4a3c12">${e.text}</p>
+        <div class="balken-liste" aria-label="So haben deine Antworten verteilt">
+          ${sortiert.slice(0, 4).map(k => `
+            <div class="balken-zeile">
+              <span>${def.ergebnisse[k].icon} ${def.ergebnisse[k].name.replace(/^(Der|Die|Das) /, '')}</span>
+              <span class="balken"><i data-breite="${Math.round((punkte[k] / gesamt) * 100)}"
+                    style="background:linear-gradient(90deg,#c9a227,#f0d275)"></i></span>
+              <span>${Math.round((punkte[k] / gesamt) * 100)}%</span>
+            </div>`).join('')}
+        </div>
+      </div>`;
+    hudSetzen('');
+    setTimeout(() => $$('.balken i', bereich).forEach(b => b.style.width = b.dataset.breite + '%'), 120);
+    KLANG.fanfare();
+    konfettiStarten(110);
+    punkteGeben(15, null, 'Test geschafft!');
+    fussSetzen([
+      { text: 'Nochmal', tu: () => modulOeffnen(def.titel, (b) => testModul(b, def)) },
+      { text: 'Fertig', geist: true, tu: modulSchliessen }
+    ]);
+  }
+
+  frageZeigen();
+  return {};
+}
+
+/* =====================================================================
+   TEIL X — TEST: WELCHER ZAUBERSTAB PASST ZU DIR?
+   ===================================================================== */
+/* Macht eine Farbe dunkler – für den Griff des Zauberstabs */
+function dunkler(hex, faktor = 0.55){
+  const n = parseInt(hex.slice(1), 16);
+  const t = v => Math.round(v * faktor).toString(16).padStart(2, '0');
+  return '#' + t((n >> 16) & 255) + t((n >> 8) & 255) + t(n & 255);
+}
+
+let stabZaehler = 0;
+function stabSvg(farbe){
+  const id = 'stabfarbe-' + (++stabZaehler);
+  return `
+  <svg class="stab-bild" viewBox="0 0 360 76" role="img" aria-label="Dein persönlicher Zauberstab">
+    <defs>
+      <linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="${dunkler(farbe, .7)}"/>
+        <stop offset="55%" stop-color="${farbe}"/>
+        <stop offset="100%" stop-color="#e8d9a8"/>
+      </linearGradient>
+      <radialGradient id="${id}-licht">
+        <stop offset="0%" stop-color="#fff8d8"/>
+        <stop offset="55%" stop-color="#f0d275" stop-opacity=".6"/>
+        <stop offset="100%" stop-color="#c9a227" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect x="12" y="30" width="86" height="20" rx="10" fill="${dunkler(farbe, .45)}"/>
+    <path d="M22 33h66M22 40h66M22 47h66" stroke="${farbe}" stroke-width="1.6" opacity=".55"/>
+    <rect x="96" y="29" width="9" height="22" rx="4" fill="#c9a227"/>
+    <path d="M104 34 L322 31 L322 40 L104 46 Z" fill="url(#${id})"/>
+    <circle cx="330" cy="37" r="30" fill="url(#${id}-licht)"/>
+    <circle cx="328" cy="37" r="4" fill="#fff6d4"/>
+  </svg>`;
+}
+
+function zauberstabModul(bereich){
+  const def = TEST_ZAUBERSTAB;
+  const werte = { holz:{}, kern:{}, art:{} };
+  Object.keys(STAB_HOLZ).forEach(k => werte.holz[k] = 0);
+  Object.keys(STAB_KERN).forEach(k => werte.kern[k] = 0);
+  Object.keys(STAB_ART).forEach(k => werte.art[k] = 0);
+  let nr = 0;
+
+  function frageZeigen(){
+    if (nr >= def.fragen.length) return ergebnis();
+    const f = def.fragen[nr];
+    const prozent = Math.round((nr / def.fragen.length) * 100);
+    const buchstaben = ['A', 'B', 'C', 'D'];
+    const abschnitt = { holz:'Das Holz', kern:'Der Kern', art:'Länge und Biegsamkeit' }[f.feld];
+
+    bereich.innerHTML = `
+      <div class="hut-fortschritt" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+           aria-valuenow="${prozent}" aria-label="Fortschritt im Test"><i style="width:${prozent}%"></i></div>
+      <p class="hut-zaehler">${abschnitt}</p>
+      <h3 class="hut-frage">${f.frage}</h3>
+      <div class="hut-antworten" role="group" aria-label="Antwortmöglichkeiten">
+        ${f.antworten.map((a, i) => `
+          <button class="hut-antwort" data-i="${i}">
+            <span class="buchstabe" aria-hidden="true">${buchstaben[i]}</span>${a.text}
+          </button>`).join('')}
+      </div>`;
+    hudSetzen(`<span>Frage: <b>${nr + 1}</b>/${def.fragen.length}</span>`);
+    fussSetzen([{ text: 'Test abbrechen', geist: true, tu: modulSchliessen }]);
+
+    $$('.hut-antwort', bereich).forEach(b => b.addEventListener('click', () => {
+      const w = f.antworten[+b.dataset.i].w;
+      Object.keys(w).forEach(k => { if (werte[f.feld][k] !== undefined) werte[f.feld][k] += w[k]; });
+      KLANG.klick();
+      nr++; frageZeigen();
+    }));
+  }
+
+  function bester(tabelle){
+    return Object.keys(tabelle).sort((a, b) => tabelle[b] - tabelle[a])[0];
+  }
+
+  function ergebnis(){
+    const holz = STAB_HOLZ[bester(werte.holz)];
+    const kern = STAB_KERN[bester(werte.kern)];
+    const art  = STAB_ART[bester(werte.art)];
+
+    bereich.innerHTML = `
+      <div class="stab-ergebnis">
+        ${stabSvg(holz.farbe)}
+        <p class="unterzeile" style="font-family:'Cormorant Garamond',serif; font-style:italic; color:#8a7331; margin:0">
+          Ollivander nickt zufrieden …</p>
+        <h3 style="font-family:'Cinzel',serif; color:#4a3c12; margin:4px 0 2px;
+                   font-size:clamp(1.15rem,.9rem+1.6vw,1.7rem)">
+          ${holz.name}, ${art.name}, ${kern.name}</h3>
+        <p style="max-width:50ch; margin:8px auto 0; color:#4a3c12">
+          Dieser Zauberstab hat sich <strong>dich</strong> ausgesucht – und das passt gut zu dir.</p>
+        <div class="stab-daten">
+          <div class="stab-zeile"><b>Holz</b><span>${holz.name} – ${holz.text}</span></div>
+          <div class="stab-zeile"><b>Kern</b><span>${kern.name} – ${kern.text}</span></div>
+          <div class="stab-zeile"><b>Maß</b><span>${art.name} – ${art.text}</span></div>
+        </div>
+      </div>`;
+    hudSetzen('');
+    KLANG.fanfare();
+    konfettiStarten(110, [holz.farbe, '#f0d275', '#c9a227']);
+    punkteGeben(15, null, 'Zauberstab gefunden!');
+    fussSetzen([
+      { text: 'Nochmal', tu: () => modulOeffnen(def.titel, zauberstabModul) },
+      { text: 'Fertig', geist: true, tu: modulSchliessen }
+    ]);
+  }
+
+  frageZeigen();
+  return {};
+}
+
+/* =====================================================================
+   TEIL Y — KACHELN MIT LEBEN FÜLLEN
+   ===================================================================== */
+/* Wird von seiteStarten() aufgerufen, nachdem die Kacheln gebaut wurden */
+function kachelnVerknuepfen(){
+  $$('[data-start]').forEach(b => {
+    b.addEventListener('click', () => {
+      const [art, id] = b.dataset.start.split(':');
+      KLANG.klick();
+      audioStarten();
+      if (art === 'spiel'){
+        const spiel = SPIELE.find(s => s.id === id);
+        modulOeffnen(spiel.titel, SPIEL_LOGIK[id]);
+      } else if (art === 'quiz'){
+        quizStarten(id);
+      } else {
+        testStarten(id);
+      }
+    });
+  });
+}
 </script>
 
 </body>
