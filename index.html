@@ -906,6 +906,7 @@ html[data-modus="lumos"] .fusszeile{ background:rgba(255,250,240,.6); }
 /* --- 18. Flucht vor Voldemort (eingebettetes Spiel) ------------------- */
 .flucht-buehne{
   position:relative; width:min(1000px, 100%); margin-inline:auto;
+  scroll-margin-top:calc(var(--kopf-hoehe) + 14px);
   display:flex; flex-direction:column;
   border-radius:var(--radius); overflow:hidden; background:#05040a;
   border:1px solid var(--rand); box-shadow:var(--schatten);
@@ -1192,7 +1193,8 @@ body.flucht-vollbild{ overflow:hidden; }
 
     <p class="flucht-tipp" id="flucht-tipp">
       Auf dem Handy startet das Spiel gleich im Vollbild – halte das Gerät quer.
-      Am Computer einmal ins Spielfeld klicken, damit die Tasten reagieren.
+      Am Computer kannst du sofort losspielen; sollten die Tasten einmal nicht
+      reagieren, klicke kurz ins Spielfeld.
     </p>
   </div>
 </section>
@@ -4490,7 +4492,10 @@ const KLANG = {
 })();
 
 /* Der goldene Schnatz fliegt über den Bildschirm.
-   Ein Klick bringt 5 Punkte für dein Haus. */
+   Ein Klick bringt 5 Punkte für dein Haus.
+   Während eines Spiels wird er ausgeblendet, damit er nicht stört. */
+window.schnatzZeigen = function(){};   // Ersatz, falls es keinen Schnatz gibt
+
 (function schnatzBauen(){
   if (wenigBewegung()) return;
   const s = document.createElement('button');
@@ -4518,7 +4523,10 @@ const KLANG = {
   }
   neuesZiel();
 
+  let fliegtGerade = true, schleife = null;
+
   function fliegen(){
+    if (!fliegtGerade) return;
     if (pause > 0){ pause--; }
     else {
       x += (zielX - x) * 0.022;
@@ -4526,10 +4534,20 @@ const KLANG = {
       if (Math.hypot(zielX - x, zielY - y) < 26) neuesZiel();
     }
     s.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
-    requestAnimationFrame(fliegen);
+    schleife = requestAnimationFrame(fliegen);
   }
   s.style.left = '0'; s.style.top = '0';
-  requestAnimationFrame(fliegen);
+  schleife = requestAnimationFrame(fliegen);
+
+  /* Von außen steuerbar: schnatzZeigen(false) blendet ihn aus und
+     hält auch die Animation an, damit sie keine Rechenzeit kostet. */
+  window.schnatzZeigen = function(an){
+    if (an === fliegtGerade) return;
+    fliegtGerade = an;
+    s.hidden = !an;
+    if (an){ neuesZiel(); schleife = requestAnimationFrame(fliegen); }
+    else if (schleife) cancelAnimationFrame(schleife);
+  };
 
   s.addEventListener('click', (e) => {
     KLANG.punkt();
@@ -5107,12 +5125,21 @@ function konfettiSchleife(){
    ===================================================================== */
 let letzterFokus = null;
 
+/* Der Schnatz soll nicht durchs Bild fliegen, während ein Fenster offen
+   ist oder das große Spiel läuft. */
+function schnatzPruefen(){
+  const stoert = $$('.overlay.offen').length > 0 ||
+                 document.body.classList.contains('flucht-aktiv');
+  window.schnatzZeigen(!stoert);
+}
+
 function overlayOeffnen(ov){
   letzterFokus = document.activeElement;
   ov.classList.add('offen');
   document.body.style.overflow = 'hidden';
   const ersterKnopf = ov.querySelector('button, [href], input');
   if (ersterKnopf) setTimeout(() => ersterKnopf.focus(), 60);
+  schnatzPruefen();
 }
 
 function overlaySchliessen(ov){
@@ -5121,6 +5148,7 @@ function overlaySchliessen(ov){
   if (ov.id === 'spiel-overlay' && typeof modulAufraeumen === 'function') modulAufraeumen();
   ov.classList.remove('offen');
   if (!$$('.overlay.offen').length) document.body.style.overflow = '';
+  schnatzPruefen();
   if (letzterFokus && letzterFokus.focus && document.contains(letzterFokus)) letzterFokus.focus();
 
   // Ein Abzeichen, das während des Spiels wartete, wird jetzt gefeiert
@@ -6498,7 +6526,13 @@ function kachelnVerknuepfen(){
     $('#flucht-rahmen').appendChild(rahmen);
     startBox.hidden = true;
     werkzeuge.hidden = false;
+    document.body.classList.add('flucht-aktiv');
+    schnatzPruefen();                       // Schnatz stört sonst beim Spielen
     KLANG.wechsel();
+    // Die Bühne sauber unter die Kopfzeile scrollen
+    setTimeout(() => buehne.scrollIntoView({
+      behavior: wenigBewegung() ? 'auto' : 'smooth', block: 'start'
+    }), 60);
     // Auf Handys und Tablets lohnt sich das Vollbild sofort
     if (window.matchMedia('(pointer:coarse)').matches) vollbild(true);
     else fokussieren();
@@ -6509,6 +6543,8 @@ function kachelnVerknuepfen(){
     if (rahmen){ rahmen.remove(); rahmen = null; }
     startBox.hidden = false;
     werkzeuge.hidden = true;
+    document.body.classList.remove('flucht-aktiv');
+    schnatzPruefen();                       // Schnatz darf wieder fliegen
     KLANG.klick();
   }
 
